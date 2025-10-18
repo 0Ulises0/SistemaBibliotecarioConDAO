@@ -1,10 +1,16 @@
 package ejecutable;
 
+import pantallas.Logeo;
+import pantallas.Principal;
+
 public class AppMain {
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
+		
+		//Logeo logeo = new Logeo("Inicio de Sesion");
+		//logeo.setVisible(true);
+		
+		Principal pantalla = new Principal("Sistema Bibliotecario");
+		pantalla.setVisible(true);
 	}
-
 }
