@@ -1,6 +1,6 @@
 package ejecutable;
 
-import pantallas.Logeo;
+//import pantallas.Logeo;
 import pantallas.Principal;
 
 public class AppMain {
