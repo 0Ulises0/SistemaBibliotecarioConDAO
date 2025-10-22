@@ -19,16 +19,17 @@ public class Logeo extends JFrame implements ActionListener {
 	
 	private static final long serialVersionUID = 1L;
 	
-	JImageStrech jisLogo;
-	JLabel jlBienvenido, jlUsuario, jlContrasena;
-	JTextField txtUsuario, txtContrasena;
-	JButton jbEntrar, jbSalir;
+	private JImageStrech jisLogo;
+	private JLabel jlBienvenido, jlUsuario, jlContrasena;
+	private JTextField txtUsuario, txtContrasena;
+	private JButton jbEntrar, jbSalir;
 	
-	JPanel contenedor;
+	private JPanel contenedor;
 	
 	public Logeo(String title) {
 		super(title);
 		setSize(800,600);
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		
 		ContenedorPrincipal();
 	}
