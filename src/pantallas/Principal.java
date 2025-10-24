@@ -18,6 +18,7 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -25,6 +26,10 @@ import javax.swing.JTextField;
 
 import componentes.JImageStrech;
 import componentes.JLabelReloj;
+import pantallasLibros.ModificarLibro;
+import pantallasLibros.RegistrarLibro;
+import pantallasUsuarios.ModificarUsuario;
+import pantallasUsuarios.RegistrarUsuario;
 
 public class Principal extends JFrame implements ActionListener {
 
@@ -107,7 +112,7 @@ public class Principal extends JFrame implements ActionListener {
 	//COMPONENTES PARA EL PANEL DE PRESTAMOS Y DEVOLUCIONES
 	//----
 	//Labels de titulo Libros, Usuarios, Prestamos Y Devoluciones
-	private JLabel jlLibrosPrestYDev, jlUsuariosPrestYDev, jlPretYDev;
+	private JLabel jlLibrosPrestYDev, jlUsuariosPrestYDev, jlPrestYDevPrestYDev;
 	//Botones
 	private JButton jbPrestar, jbDevolver, jbLimpiarLibrosPrestYDev, jbLimpiarUsuariosPrestYDev, jbLimpiarPrestYDev;
 	//JTextField para buscar Libros, Usuarios y Prestamos
@@ -116,6 +121,16 @@ public class Principal extends JFrame implements ActionListener {
 	private JTable jtLibrosPrestYDev, jtUsuariosPrestYDev, jtPrestYDev;
 	//Scroll Pane para las tablas respectivas
 	private JScrollPane jspUsuariosPrestYDev, jspLibrosPrestYDev, jspPrestYDev;
+	
+	//Pantallas para Registrar y Modificar
+	//Usuarios, Libros
+	private RegistrarUsuario ruPantalla;
+	private RegistrarLibro rlPantalla;
+	private ModificarUsuario muPantalla;
+	private ModificarLibro mlPantalla;
+	
+	//Pantalla de logue
+	private Logeo logeo;
 	
 	
 	//DATOS DE PRUEBA
@@ -131,6 +146,7 @@ public class Principal extends JFrame implements ActionListener {
 		super(title);
 		setSize(ANCHO,ALTO);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		setLocationRelativeTo(null);
 		
 		//Menu
 		menuBar();
@@ -331,18 +347,21 @@ public class Principal extends JFrame implements ActionListener {
 		gbc.gridy = 2;
 		jbRegistrarUsuario = new JButton(new ImageIcon(getClass().getResource("/imagenes/registrar.png")));
 		jbRegistrarUsuario.setPreferredSize(new java.awt.Dimension(40, 40));
+		jbRegistrarUsuario.addActionListener(this);
 		jpUsuarios.add(jbRegistrarUsuario, gbc);
 		
 		gbc.gridx = 2;
 		gbc.gridy = 3;
 		jbModificarUsuario = new JButton(new ImageIcon(getClass().getResource("/imagenes/modificar.png")));
 		jbModificarUsuario.setPreferredSize(new java.awt.Dimension(40, 40));
+		jbModificarUsuario.addActionListener(this);
 		jpUsuarios.add(jbModificarUsuario, gbc);
 		
 		gbc.gridx = 3;
 		gbc.gridy = 3;
 		jbEliminarUsuario = new JButton(new ImageIcon(getClass().getResource("/imagenes/eliminar.png")));
 		jbEliminarUsuario.setPreferredSize(new java.awt.Dimension(40, 40));
+		jbEliminarUsuario.addActionListener(this);
 		jpUsuarios.add(jbEliminarUsuario, gbc);
 		
 		gbc.gridx = 1;
@@ -354,12 +373,14 @@ public class Principal extends JFrame implements ActionListener {
 		gbc.gridy = 2;
 		jbBuscarUsuario = new JButton(new ImageIcon(getClass().getResource("/imagenes/buscarusuario.png")));
 		jbBuscarUsuario.setPreferredSize(new java.awt.Dimension(40, 40));
+		jbBuscarUsuario.addActionListener(this);
 		jpUsuarios.add(jbBuscarUsuario, gbc);
 		 
 		gbc.gridx = 3;
 		gbc.gridy = 2;
 		jbLimpiarUsuario = new JButton(new ImageIcon(getClass().getResource("/imagenes/limpiar.png")));
 		jbLimpiarUsuario.setPreferredSize(new java.awt.Dimension(40, 40));
+		jbLimpiarUsuario.addActionListener(this);
 		jpUsuarios.add(jbLimpiarUsuario, gbc);
 		
 		gbc.gridx = 1;
@@ -382,18 +403,21 @@ public class Principal extends JFrame implements ActionListener {
 		gbc.gridy = 2;
 		jbRegistrarLibro = new JButton(new ImageIcon(getClass().getResource("/imagenes/registrar.png")));
 		jbRegistrarLibro.setPreferredSize(new java.awt.Dimension(40, 40));
+		jbRegistrarLibro.addActionListener(this);
 		jpLibros.add(jbRegistrarLibro, gbc);
 		
 		gbc.gridx = 2;
 		gbc.gridy = 4;
 		jbModificarLibro = new JButton(new ImageIcon(getClass().getResource("/imagenes/modificar.png")));
 		jbModificarLibro.setPreferredSize(new java.awt.Dimension(40, 40));
+		jbModificarLibro.addActionListener(this);
 		jpLibros.add(jbModificarLibro, gbc);
 		
 		gbc.gridx = 3;
 		gbc.gridy = 4;
 		jbEliminarLibro = new JButton(new ImageIcon(getClass().getResource("/imagenes/eliminar.png")));
 		jbEliminarLibro.setPreferredSize(new java.awt.Dimension(40, 40));
+		jbEliminarLibro.addActionListener(this);
 		jpLibros.add(jbEliminarLibro, gbc);
 		
 		gbc.gridx = 1;
@@ -404,18 +428,21 @@ public class Principal extends JFrame implements ActionListener {
 		gbc.gridx = 1;
 		gbc.gridy = 3;
 		cbLibrosDisponibles = new JCheckBox("Disponible");
+		cbLibrosDisponibles.addActionListener(this);
 		jpLibros.add(cbLibrosDisponibles, gbc);
 		
 		gbc.gridx = 2;
 		gbc.gridy = 2;
 		jbBuscarLibro = new JButton(new ImageIcon(getClass().getResource("/imagenes/buscarlibro.png")));
 		jbBuscarLibro.setPreferredSize(new java.awt.Dimension(40, 40));
+		jbBuscarLibro.addActionListener(this);
 		jpLibros.add(jbBuscarLibro, gbc);
 		 
 		gbc.gridx = 3;
 		gbc.gridy = 2;
 		jbLimpiarLibro = new JButton(new ImageIcon(getClass().getResource("/imagenes/limpiar.png")));
 		jbLimpiarLibro.setPreferredSize(new java.awt.Dimension(40, 40));
+		jbLimpiarLibro.addActionListener(this);
 		jpLibros.add(jbLimpiarLibro, gbc);
 		
 		gbc.gridx = 1;
@@ -427,108 +454,155 @@ public class Principal extends JFrame implements ActionListener {
 	}
 	public void componentesCentroPrestYDev() {
 		GridBagConstraints gbc = new GridBagConstraints();
-	    gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.insets = new Insets(5, 5, 5, 5);
 
-	    // --- FILA 0: TÍTULO PRINCIPAL ---
-	    // (Es mejor poner el título primero)
-	    gbc.gridx = 0;
-	    gbc.gridy = 0;
-	    gbc.gridwidth = 2; // Que el título ocupe 2 columnas
-	    gbc.anchor = GridBagConstraints.CENTER; // Centramos el título
-	    jlGestionPrestYDev = new JLabel("GESTION DE PRESTAMOS Y DEVOLUCIONES");
-	    jlGestionPrestYDev.setFont(new Font("Arial", Font.PLAIN, 24));
-	    jpPrestYDev.add(jlGestionPrestYDev, gbc);
+        // --- FILA 0: TÍTULO PRINCIPAL ---
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 3; // Ocupa las 3 columnas
+        gbc.anchor = GridBagConstraints.CENTER;
+        jlGestionPrestYDev = new JLabel("GESTION DE PRESTAMOS Y DEVOLUCIONES");
+        jlGestionPrestYDev.setFont(new Font("Arial", Font.PLAIN, 24));
+        jpPrestYDev.add(jlGestionPrestYDev, gbc);
 
-	    // --- Reseteamos gbc para los siguientes componentes ---
-	    gbc.gridwidth = 1; // Reseteamos a 1 columna
-	    gbc.anchor = GridBagConstraints.WEST; // Anclamos todo a la izquierda
+        // --- Reseteamos gbc ---
+        gbc.gridwidth = 1;
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.weightx = 0.0;
+        gbc.weighty = 0.0;
 
-	    // --- FILA 1: ETIQUETAS "USUARIOS" Y "LIBROS" ---
-	    gbc.gridx = 0;
-	    gbc.gridy = 1;
-	    jlUsuariosPrestYDev = new JLabel("USUARIOS:");
-	    jpPrestYDev.add(jlUsuariosPrestYDev, gbc);
+        // --- FILA 1: ETIQUETAS "USUARIOS" Y "LIBROS" ---
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        jlUsuariosPrestYDev = new JLabel("USUARIOS:");
+        jpPrestYDev.add(jlUsuariosPrestYDev, gbc);
 
-	    gbc.gridx = 1;
-	    gbc.gridy = 1;
-	    jlLibrosPrestYDev = new JLabel("LIBROS:");
-	    jpPrestYDev.add(jlLibrosPrestYDev, gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        jlLibrosPrestYDev = new JLabel("LIBROS:");
+        jpPrestYDev.add(jlLibrosPrestYDev, gbc);
+        // Columna 2 (gridx=2) en esta fila queda vacía
 
-	    // --- FILA 2: JTEXTFIELDS DE BÚSQUEDA ---
-	    gbc.gridx = 0;
-	    gbc.gridy = 2;
-	    gbc.fill = GridBagConstraints.HORIZONTAL; // Que el campo crezca a lo ancho
-	    gbc.weightx = 0.5; // Que esta columna tome el 50% del espacio horizontal
-	    jtfBuscarUsuariosPrestYDev = new JTextField(15);
-	    jpPrestYDev.add(jtfBuscarUsuariosPrestYDev, gbc);
+        
+        // --- FILA 2: JTEXTFIELDS Y BOTONES LIMPIAR (Arriba) ---
+        //   *** INICIO DE CAMBIOS (FILA 2) ***
+        
+        // --- Panel para Búsqueda de Usuarios (TextField + Botón) ---
+        JPanel pnlBusquedaUsuario = new JPanel(new BorderLayout(5, 0)); // 5px de gap horizontal
+        jtfBuscarUsuariosPrestYDev = new JTextField(15);
+        jbLimpiarUsuariosPrestYDev = new JButton(new ImageIcon(getClass().getResource("/imagenes/limpiar.png")));
+        jbLimpiarUsuariosPrestYDev.setPreferredSize(new java.awt.Dimension(40, 40));
+        pnlBusquedaUsuario.add(jtfBuscarUsuariosPrestYDev, BorderLayout.CENTER); // El TextField se estira
+        pnlBusquedaUsuario.add(jbLimpiarUsuariosPrestYDev, BorderLayout.EAST);  // El Botón se pega a la derecha
 
-	    gbc.gridx = 1;
-	    gbc.gridy = 2;
-	    gbc.fill = GridBagConstraints.HORIZONTAL; // Que el campo crezca a lo ancho
-	    gbc.weightx = 0.5; // Que esta columna tome el otro 50%
-	    jtfBuscarLibrosPrestYDev = new JTextField(15);
-	    jpPrestYDev.add(jtfBuscarLibrosPrestYDev, gbc);
-	    
-	    gbc.gridx = 2;
-	    gbc.gridy = 2;
-	    jbPrestar = new JButton("PRESTAR");
-	    jpPrestYDev.add(jbPrestar);
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1.0; // Damos peso a esta columna para que crezca
+        jpPrestYDev.add(pnlBusquedaUsuario, gbc);
 
-	    // --- FILA 3: TABLAS DE USUARIOS Y LIBROS ---
-	    // (Estas son las que deben crecer más)
-	    gbc.gridx = 0;
-	    gbc.gridy = 3;
-	    gbc.fill = GridBagConstraints.BOTH; // Que rellene ancho y alto
-	    gbc.weighty = 1.0; // ¡IMPORTANTE! Que crezca verticalmente
-	    jtUsuariosPrestYDev = new JTable(datos, columnas);
-	    jspUsuariosPrestYDev = new JScrollPane(jtUsuariosPrestYDev);
-	    jpPrestYDev.add(jspUsuariosPrestYDev, gbc);
+        // --- Panel para Búsqueda de Libros (TextField + Botón) ---
+        JPanel pnlBusquedaLibro = new JPanel(new BorderLayout(5, 0)); // 5px de gap horizontal
+        jtfBuscarLibrosPrestYDev = new JTextField(15);
+        jbLimpiarLibrosPrestYDev = new JButton(new ImageIcon(getClass().getResource("/imagenes/limpiar.png")));
+        jbLimpiarLibrosPrestYDev.setPreferredSize(new java.awt.Dimension(40, 40));
+        pnlBusquedaLibro.add(jtfBuscarLibrosPrestYDev, BorderLayout.CENTER);
+        pnlBusquedaLibro.add(jbLimpiarLibrosPrestYDev, BorderLayout.EAST);
+        
+        gbc.gridx = 1;
+        gbc.gridy = 2;
+        // gbc.fill y gbc.weightx ya están seteados
+        jpPrestYDev.add(pnlBusquedaLibro, gbc);
 
-	    gbc.gridx = 1;
-	    gbc.gridy = 3;
-	    gbc.fill = GridBagConstraints.BOTH; // Que rellene ancho y alto
-	    gbc.weighty = 1.0; // ¡IMPORTANTE! Que también crezca verticalmente
-	    jtLibrosPrestYDev = new JTable(datos, columnas);
-	    jspLibrosPrestYDev = new JScrollPane(jtLibrosPrestYDev);
-	    jpPrestYDev.add(jspLibrosPrestYDev, gbc);
+        // La columna 2 (gridx=2) queda libre en esta fila
+        gbc.gridx = 2;
+        gbc.gridy = 2;
+        gbc.weightx = 0.0; // Columna de botones no debe crecer
+        
+        //   *** FIN DE CAMBIOS (FILA 2) ***
 
-	    // --- Reseteamos pesos para los siguientes ---
-	    gbc.weightx = 0.0;
-	    gbc.weighty = 0.0;
-	    gbc.fill = GridBagConstraints.NONE;
 
-	    // --- FILA 4: ETIQUETA "PRESTAMOS Y DEVOLUCIONES" ---
-	    gbc.gridx = 0;
-	    gbc.gridy = 4;
-	    gbc.gridwidth = 2; // Que ocupe 2 columnas
-	    gbc.anchor = GridBagConstraints.CENTER; // Centramos la etiqueta
-	    jlPrestYDev = new JLabel("Prestamos y Devoluciones");
-	    jpPrestYDev.add(jlPrestYDev, gbc);
+        // --- FILA 3: TABLAS Y BOTÓN PRESTAR ---
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.weightx = 1.0; // La columna 0 puede crecer
+        gbc.weighty = 1.0; // La fila 3 puede crecer mucho
+        jtUsuariosPrestYDev = new JTable(datos, columnas);
+        jspUsuariosPrestYDev = new JScrollPane(jtUsuariosPrestYDev);
+        jpPrestYDev.add(jspUsuariosPrestYDev, gbc);
 
-	    // --- FILA 5: JTEXTFIELD DE PRESTAMOS ---
-	    gbc.gridx = 0;
-	    gbc.gridy = 5;
-	    gbc.fill = GridBagConstraints.HORIZONTAL; // Que rellene a lo ancho
-	    // (No necesita weightx porque gridwidth=2 ya lo fuerza a ocupar todo el ancho)
-	    jtfBuscarPrestYDev = new JTextField(15);
-	    jpPrestYDev.add(jtfBuscarPrestYDev, gbc);
-	    
-	    gbc.gridx = 1;
-	    gbc.gridy = 5;
-	    jbDevolver = new JButton("DEVOLVER");
-	    jpPrestYDev.add(jbDevolver);
-	    
-	    
+        gbc.gridx = 1;
+        gbc.gridy = 3;
+        // gbc.fill, weighty, weightx ya están seteados
+        jtLibrosPrestYDev = new JTable(datos, columnas);
+        jspLibrosPrestYDev = new JScrollPane(jtLibrosPrestYDev);
+        jpPrestYDev.add(jspLibrosPrestYDev, gbc);
 
-	    // --- FILA 6: TABLA DE PRESTAMOS ---
-	    gbc.gridx = 0;
-	    gbc.gridy = 6;
-	    gbc.fill = GridBagConstraints.BOTH; // Que rellene ancho y alto
-	    gbc.weighty = 1.0; // Que también pueda crecer verticalmente
-	    jtPrestYDev = new JTable(datos, columnas);
-	    jspPrestYDev = new JScrollPane(jtPrestYDev);
-	    jpPrestYDev.add(jspPrestYDev, gbc);
-		
+        // --- Botón Prestar en la columna de acciones (Correcto como lo tenías) ---
+        gbc.gridx = 2;
+        gbc.gridy = 3;
+        gbc.fill = GridBagConstraints.HORIZONTAL; // Que el botón llene su celda
+        gbc.weightx = 0.0; // Columna de botones no crece
+        gbc.weighty = 0.0; // No crece verticalmente
+        gbc.anchor = GridBagConstraints.NORTH; // Se alinea con la parte superior
+        jbPrestar = new JButton("PRESTAR");
+        jpPrestYDev.add(jbPrestar, gbc);
+
+        // --- FILA 4: ETIQUETA "PRESTAMOS Y DEVOLUCIONES" ---
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        gbc.gridwidth = 3; // Abarca las 3 columnas
+        gbc.weightx = 0.0; // Reseteamos
+        gbc.weighty = 0.0; // Reseteamos
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.anchor = GridBagConstraints.CENTER;
+        jlPrestYDevPrestYDev = new JLabel("Prestamos y Devoluciones");
+        jpPrestYDev.add(jlPrestYDevPrestYDev, gbc);
+
+        // --- FILA 5: JTEXTFIELD+LIMPIAR Y BOTÓN DEVOLVER (Abajo) ---
+        //   *** INICIO DE CAMBIOS (FILA 5) ***
+        gbc.gridwidth = 1; // Reseteamos
+
+        // --- Panel para Búsqueda de Préstamos (TextField + Botón Limpiar) ---
+        JPanel pnlBusquedaPrestamo = new JPanel(new BorderLayout(5, 0)); // 5px de gap
+        jtfBuscarPrestYDev = new JTextField(15);
+        jbLimpiarPrestYDev = new JButton(new ImageIcon(getClass().getResource("/imagenes/limpiar.png")));
+        jbLimpiarPrestYDev.setPreferredSize(new java.awt.Dimension(40, 40));
+        pnlBusquedaPrestamo.add(jtfBuscarPrestYDev, BorderLayout.CENTER);
+        pnlBusquedaPrestamo.add(jbLimpiarPrestYDev, BorderLayout.EAST);
+        
+        gbc.gridx = 0;
+        gbc.gridy = 5;
+        gbc.gridwidth = 2; // El panel de búsqueda ocupa las 2 columnas de las tablas
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1.0; // Que crezca
+        jpPrestYDev.add(pnlBusquedaPrestamo, gbc);
+
+        // --- Botón Devolver en la columna de acciones ---
+        gbc.gridx = 2;
+        gbc.gridy = 6;
+        gbc.gridwidth = 1; // Ocupa solo 1 columna
+        gbc.fill = GridBagConstraints.HORIZONTAL; // Que llene su celda
+        gbc.weightx = 0.0; // Columna de botones no crece
+        gbc.anchor = GridBagConstraints.NORTH; // Alinear con el botón Prestar
+        jbDevolver = new JButton("DEVOLVER");
+        jpPrestYDev.add(jbDevolver, gbc);
+        
+        //   *** FIN DE CAMBIOS (FILA 5) ***
+
+
+        // --- FILA 6: TABLA DE PRESTAMOS ---
+        gbc.gridx = 0;
+        gbc.gridy = 6;
+        gbc.gridwidth = 2; // Abarca las 3 columnas
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0; // Que la tabla de abajo también crezca
+        jtPrestYDev = new JTable(datos, columnas);
+        jspPrestYDev = new JScrollPane(jtPrestYDev);
+        jpPrestYDev.add(jspPrestYDev, gbc);
 	}
 	
 	
@@ -538,14 +612,63 @@ public class Principal extends JFrame implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if(e.getSource() == jbUsuarios) {
+		//SALIR Y CERRAR SESION
+		if(e.getSource() == jbSalir) {
+			int respuesta = JOptionPane.showConfirmDialog(this, "¿Desea salir de la aplicacion?", "CONFIRMAR SALIDA", JOptionPane.YES_NO_OPTION);
+			if(respuesta == JOptionPane.YES_OPTION) {
+				System.exit(0);
+			}
+			else {
+				return;
+			}
+		}
+		else if(e.getSource() == jbCerrarSesion) {
+			int respuesta = JOptionPane.showConfirmDialog(this, "¿Desea cerrar sesion?", "CERRAR SESION", JOptionPane.YES_NO_OPTION);
+			if(respuesta == JOptionPane.YES_OPTION) {
+				logeo = new Logeo("INICIAR SESION");
+				logeo.setVisible(true);
+				setVisible(false);
+			}
+			else {
+				return;
+			}
+		}
+		
+		//MOVERSE ENTRE LOS PANELES USUARIOS, LIBROS Y PRESTAMOS
+		if(e.getSource() == jbUsuarios || e.getSource() == jmiUsuarios) {
 			cardLayoutULPD.show(jpCentro, "USUARIOS");
 		}
-		else if(e.getSource() == jbLibros) {
+		else if(e.getSource() == jbLibros || e.getSource() == jmiLibros) {
 			cardLayoutULPD.show(jpCentro, "LIBROS");
 		}
-		else if(e.getSource() == jbPrestYDev) {
+		else if(e.getSource() == jbPrestYDev || e.getSource() == jmiPrestYDev) {
 			cardLayoutULPD.show(jpCentro, "PRESTYDEV");
+		}
+		
+		//ELEMENTOS DE USUARIOS
+		else if(e.getSource() == jbRegistrarUsuario) {
+			ruPantalla = new RegistrarUsuario("Registrar Usuario");
+			ruPantalla.setVisible(true);
+		}
+		else if(e.getSource() == jbModificarUsuario) {
+			muPantalla = new ModificarUsuario("Modificar Usuario");
+			muPantalla.setVisible(true);
+		}
+		else if(e.getSource() == jbLimpiarUsuario) {
+			jtfBuscarUsuarios.setText("");
+		}
+		
+		//ELEMENTOS DE LIBROS
+		else if(e.getSource() == jbRegistrarLibro) {
+			rlPantalla = new RegistrarLibro ("Registrar Libro");
+			rlPantalla.setVisible(true);
+		}
+		else if(e.getSource() == jbModificarLibro) {
+			mlPantalla = new ModificarLibro ("Modificar Libro");
+			mlPantalla.setVisible(true);
+		}
+		else if(e.getSource() == jbLimpiarLibro) {
+			jtfBuscarLibros.setText("");
 		}
 	}
 }

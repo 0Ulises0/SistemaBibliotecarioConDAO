@@ -27,7 +27,8 @@ public class ModificarUsuario extends JFrame implements ActionListener {
 	public ModificarUsuario (String title) {
 		super(title);
 		setSize(800,600);
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		//setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+		setLocationRelativeTo(null);
 		
 		contenedorPrincipal();
 	}
@@ -43,11 +44,17 @@ public class ModificarUsuario extends JFrame implements ActionListener {
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.insets = new Insets(5,5,5,5);
 		
+		gbc.gridwidth = 2;
+		gbc.anchor = GridBagConstraints.CENTER;
+		
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		jlModificarUsuario = new JLabel("Modificar Usuario");
 		jlModificarUsuario.setFont(new Font("Arial", Font.PLAIN, 18));
 		jpContenedor.add(jlModificarUsuario, gbc);
+		
+		gbc.gridwidth = 1;
+		gbc.anchor = GridBagConstraints.WEST;
 		
 		
 		//Nombre:
@@ -110,13 +117,16 @@ public class ModificarUsuario extends JFrame implements ActionListener {
 		jtfFechaNacimiento = new JTextField(15);
 		jpContenedor.add(jtfFechaNacimiento, gbc);
 		
+		gbc.gridwidth = 2;
+		gbc.anchor = GridBagConstraints.CENTER;
+		
 		//Registrar, Cancelar Usuario, boton
 		gbc.gridx = 0;
 		gbc.gridy = 7;
 		jbModificarUsuario = new JButton("Modificar");
 		jpContenedor.add(jbModificarUsuario, gbc);
-		gbc.gridx = 1;
-		gbc.gridy = 7;
+		gbc.gridx = 0;
+		gbc.gridy = 8;
 		jbCancelar = new JButton("Cancelar");
 		jpContenedor.add(jbCancelar, gbc);
 	}

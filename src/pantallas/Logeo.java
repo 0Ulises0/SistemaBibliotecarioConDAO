@@ -10,6 +10,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -26,10 +27,14 @@ public class Logeo extends JFrame implements ActionListener {
 	
 	private JPanel contenedor;
 	
+	//SISTEMA BIBLIOTECARIO
+	private Principal SistemaBibliotecario;
+	
 	public Logeo(String title) {
 		super(title);
 		setSize(800,600);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		setLocationRelativeTo(null);
 		
 		ContenedorPrincipal();
 	}
@@ -76,16 +81,32 @@ public class Logeo extends JFrame implements ActionListener {
 		gbc.gridx = 0;
 		gbc.gridy = 6;
 		jbEntrar = new JButton("ENTRAR");
+		jbEntrar.addActionListener(this);
 		contenedor.add(jbEntrar, gbc);
 		gbc.gridx = 0;
 		gbc.gridy = 7;
 		jbSalir = new JButton("SALIR");
+		jbSalir.addActionListener(this);
 		contenedor.add(jbSalir, gbc);
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		
+		if(e.getSource() == jbEntrar) {
+			
+			//Confirmar Usuario y Contraseña
+			if(txtUsuario.getText().equals("Ulises") && txtContrasena.getText().equals("1234")) {
+				SistemaBibliotecario = new Principal ("SISTEMA BIBLIOTECARIO");
+				SistemaBibliotecario.setVisible(true);
+				setVisible(false);
+			}
+			else {
+				JOptionPane.showMessageDialog(this, "Usuario o Contraseña Incorrectos");
+			}
+		}
+		else if(e.getSource() == jbSalir) {
+			System.exit(0);
+		}
 	}
 
 }
