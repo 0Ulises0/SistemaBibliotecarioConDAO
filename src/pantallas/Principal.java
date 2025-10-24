@@ -24,6 +24,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 
+import DAO.DAOUsuarios;
 import componentes.JImageStrech;
 import componentes.JLabelReloj;
 import pantallasLibros.ModificarLibro;
@@ -132,6 +133,8 @@ public class Principal extends JFrame implements ActionListener {
 	//Pantalla de logue
 	private Logeo logeo;
 	
+	//COLUMNAS USUARIO
+	private String [] columnasUsuario = {"ID", "NOMBRE", "APELLIDO", "GENERO", "TELEFONO", "EMAIL", "FECHA NACIMIENTO"};
 	
 	//DATOS DE PRUEBA
 	Object[][] datos = {
