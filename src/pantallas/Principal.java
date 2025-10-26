@@ -9,6 +9,9 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.sql.SQLException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -24,6 +27,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 
+import DAO.DAOLibros;
+import DAO.DAOPresYDev;
 import DAO.DAOUsuarios;
 import componentes.JImageStrech;
 import componentes.JLabelReloj;
@@ -31,6 +36,10 @@ import pantallasLibros.ModificarLibro;
 import pantallasLibros.RegistrarLibro;
 import pantallasUsuarios.ModificarUsuario;
 import pantallasUsuarios.RegistrarUsuario;
+
+//Imports para las tablas y Pantalla de Modificar
+import javax.swing.ListSelectionModel;
+import javax.swing.table.DefaultTableModel;
 
 public class Principal extends JFrame implements ActionListener {
 
@@ -135,17 +144,13 @@ public class Principal extends JFrame implements ActionListener {
 	
 	//COLUMNAS USUARIO
 	private String [] columnasUsuario = {"ID", "NOMBRE", "APELLIDO", "GENERO", "TELEFONO", "EMAIL", "FECHA NACIMIENTO"};
+	//COLUMNAS LIBRO
+	private String [] columnasLibro = {"ID", "TITULO", "AUTOR", "CATEGORIA", "EDICION", "STOCK"};
+	//COLUMNAS PRESTAMI
+	private String [] columnasPrestamo = {"NOMBRE", "LIBRO", "PRESTAMO", "DEVOLUCION", "ESTADO"};
 	
-	//DATOS DE PRUEBA
-	Object[][] datos = {
-	        { "1", "Ulises", "Papachoris", "ulises@correo.com" },
-	        { "2", "Ana", "García", "ana@correo.com" },
-	        { "3", "Juan", "Pérez", "juan@correo.com" },
-	        { "4", "Maria", "Lopez", "maria@correo.com" }
-	    };
-	String[] columnas = { "ID", "Nombre", "Apellido", "Email" };
 	
-	public Principal(String title) {
+	public Principal(String title) throws Exception {
 		super(title);
 		setSize(ANCHO,ALTO);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -200,7 +205,7 @@ public class Principal extends JFrame implements ActionListener {
 		componentesSur();
 		add(jpSur, BorderLayout.SOUTH);
 	}
-	public void contenedorCentro() {
+	public void contenedorCentro() throws Exception {
 		cardLayoutULPD = new CardLayout();
 		
 		jpCentro = new JPanel(cardLayoutULPD);
@@ -336,7 +341,7 @@ public class Principal extends JFrame implements ActionListener {
 		jisBienvenido.setPreferredSize(new java.awt.Dimension(740, 414));
 		jpInicio.add(jisBienvenido, gbc);	
 	}
-	public void componentesCentroUsuarios() {
+	public void componentesCentroUsuarios() throws Exception {
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.insets = new Insets(5,5,5,5);
 		
@@ -370,6 +375,12 @@ public class Principal extends JFrame implements ActionListener {
 		gbc.gridx = 1;
 		gbc.gridy = 2;
 		jtfBuscarUsuarios = new JTextField(35);
+		jtfBuscarUsuarios.addKeyListener(new java.awt.event.KeyAdapter() {
+		    public void keyReleased(java.awt.event.KeyEvent evt) {
+		        // Este método se llama CADA VEZ que sueltas una tecla
+		        jtfBuscarUsuariosKeyReleased(evt);
+		    }
+		});
 		jpUsuarios.add(jtfBuscarUsuarios, gbc);
 		
 		gbc.gridx = 2;
@@ -388,11 +399,12 @@ public class Principal extends JFrame implements ActionListener {
 		
 		gbc.gridx = 1;
 		gbc.gridy = 3;
-		jtUsuarios = new JTable(datos, columnas);
+		jtUsuarios = new JTable(DAOUsuarios.ConsultarTodo(), columnasUsuario);
+		jtUsuarios.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); //Hace que solo se pueda seleccionar una fila a la vez
 		jspUsuarios = new JScrollPane(jtUsuarios);
 		jpUsuarios.add(jspUsuarios, gbc);
 	}
-	public void componentesCentroLibros() {
+	public void componentesCentroLibros() throws Exception {
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.insets = new Insets(5,5,5,5);
 		
@@ -426,6 +438,11 @@ public class Principal extends JFrame implements ActionListener {
 		gbc.gridx = 1;
 		gbc.gridy = 2;
 		jtfBuscarLibros = new JTextField(35);
+		jtfBuscarLibros.addKeyListener(new java.awt.event.KeyAdapter() {
+		    public void keyReleased(java.awt.event.KeyEvent evt) {
+		        jtfBuscarLibrosKeyReleased(evt); // Llama al nuevo método
+		    }
+		});
 		jpLibros.add(jtfBuscarLibros, gbc);
 		
 		gbc.gridx = 1;
@@ -450,12 +467,13 @@ public class Principal extends JFrame implements ActionListener {
 		
 		gbc.gridx = 1;
 		gbc.gridy = 4;
-		jtLibros = new JTable(datos, columnas);
+		jtLibros = new JTable(DAOLibros.ConsultarTodo(false), columnasLibro);
+		jtLibros.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		jspLibros = new JScrollPane(jtLibros);
 		jpLibros.add(jspLibros, gbc);
 
 	}
-	public void componentesCentroPrestYDev() {
+	public void componentesCentroPrestYDev() throws Exception {
 		GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
 
@@ -532,14 +550,14 @@ public class Principal extends JFrame implements ActionListener {
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 1.0; // La columna 0 puede crecer
         gbc.weighty = 1.0; // La fila 3 puede crecer mucho
-        jtUsuariosPrestYDev = new JTable(datos, columnas);
+        jtUsuariosPrestYDev = new JTable(DAOUsuarios.ConsultarTodo(), columnasUsuario);
         jspUsuariosPrestYDev = new JScrollPane(jtUsuariosPrestYDev);
         jpPrestYDev.add(jspUsuariosPrestYDev, gbc);
 
         gbc.gridx = 1;
         gbc.gridy = 3;
         // gbc.fill, weighty, weightx ya están seteados
-        jtLibrosPrestYDev = new JTable(datos, columnas);
+        jtLibrosPrestYDev = new JTable(DAOLibros.ConsultarTodo(true), columnasLibro);
         jspLibrosPrestYDev = new JScrollPane(jtLibrosPrestYDev);
         jpPrestYDev.add(jspLibrosPrestYDev, gbc);
 
@@ -603,12 +621,89 @@ public class Principal extends JFrame implements ActionListener {
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 1.0;
         gbc.weighty = 1.0; // Que la tabla de abajo también crezca
-        jtPrestYDev = new JTable(datos, columnas);
+        jtPrestYDev = new JTable(DAOPresYDev.ConsultarTodo(), columnasPrestamo);
         jspPrestYDev = new JScrollPane(jtPrestYDev);
         jpPrestYDev.add(jspPrestYDev, gbc);
 	}
 	
+	//Metodo para buscar Usuarios mientras se escribe
+	private void jtfBuscarUsuariosKeyReleased(java.awt.event.KeyEvent evt) {
+	    try {
+	        // 1. Obtener el texto que el usuario está escribiendo
+	        String textoBusqueda = jtfBuscarUsuarios.getText();
+	        
+	        // 2. Llamar al método del DAO que acabamos de crear
+	        Object[][] datos = DAOUsuarios.BuscarUsuario(textoBusqueda);
+	        
+	        // 3. Actualizar la JTable con los nuevos datos
+	        // (columnasUsuario es el array de String que ya tienes definido en tu clase Principal)
+	        jtUsuarios.setModel(new DefaultTableModel(datos, columnasUsuario));
+	        
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        JOptionPane.showMessageDialog(this, "Error al buscar usuarios: " + e.getMessage());
+	    }
+	}
+	//Metodo para actualizar la tabla de usuarios 
+	public void actualizarTablaUsuarios() {
+	    try {
+	        // 1. Obtiene los datos frescos de la base de datos
+	        Object[][] datos = DAOUsuarios.ConsultarTodo();
+	        
+	        // 2. Asigna los nuevos datos a la tabla
+	        // (columnasUsuario es el array de String que ya tienes definido)
+	        jtUsuarios.setModel(new DefaultTableModel(datos, columnasUsuario));
+	        
+	        // 3. Volvemos a aplicar la configuración de selección (sin método extra)
+	        jtUsuarios.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+	        
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        JOptionPane.showMessageDialog(this, 
+	            "Error al actualizar la tabla de usuarios: " + e.getMessage(), 
+	            "Error de Carga", 
+	            JOptionPane.ERROR_MESSAGE);
+	    }
+	}
 	
+	//Metodos para el panel de libros
+	public void actualizarTablaLibros() {
+	    try {
+	        // 1. Obtiene los valores de los filtros
+	        String textoBusqueda = jtfBuscarLibros.getText();
+	        boolean soloDisponibles = cbLibrosDisponibles.isSelected();
+	        
+	        Object[][] datos;
+	        
+	        // 2. Decide qué método DAO llamar
+	        if (textoBusqueda.isEmpty()) {
+	            // Si no hay texto, consulta todo (respetando el checkbox)
+	            datos = DAOLibros.ConsultarTodo(soloDisponibles);
+	        } else {
+	            // Si hay texto, busca por título (respetando el checkbox)
+	            datos = DAOLibros.BuscarLibro(textoBusqueda, soloDisponibles);
+	        }
+	        
+	        // 3. Asigna los nuevos datos a la tabla
+	        jtLibros.setModel(new DefaultTableModel(datos, columnasLibro));
+	        
+	        // 4. Aplicar la configuración de selección
+	        jtLibros.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+	        
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        JOptionPane.showMessageDialog(this, 
+	            "Error al actualizar la tabla de libros: " + e.getMessage(), 
+	            "Error de Carga", 
+	            JOptionPane.ERROR_MESSAGE);
+	    }
+	}
+
+	//Metodo para buscar Libros mientras se escribe
+	private void jtfBuscarLibrosKeyReleased(java.awt.event.KeyEvent evt) {
+	    // Cada vez que se teclea, llama al actualizador
+        actualizarTablaLibros();
+	}
 	
 	
 	
@@ -651,27 +746,173 @@ public class Principal extends JFrame implements ActionListener {
 		//ELEMENTOS DE USUARIOS
 		else if(e.getSource() == jbRegistrarUsuario) {
 			ruPantalla = new RegistrarUsuario("Registrar Usuario");
+			
+			ruPantalla.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosed(WindowEvent windowEvent) {
+                    // Cuando la ventana de registro se cierra,
+                    // mandamos actualizar la tabla principal.
+                    actualizarTablaUsuarios(); 
+                }
+            });
+			
 			ruPantalla.setVisible(true);
 		}
 		else if(e.getSource() == jbModificarUsuario) {
+			
+			int filaSeleccionada = jtUsuarios.getSelectedRow();
+			
+			//Comprobar que haya una fila seleccionada
+			if(filaSeleccionada == -1) {
+				JOptionPane.showMessageDialog(this, "Por favor, selecciona un usuario de la tabla para modificar.", "Ningún usuario seleccionado", JOptionPane.WARNING_MESSAGE);
+                return;
+			}
+			
+			//Para obetener los datos de la tabla se hace lo siguiente 
+			int idUsuario = (Integer) jtUsuarios.getValueAt(filaSeleccionada, 0);
+			String nombre = (String) jtUsuarios.getValueAt(filaSeleccionada, 1);
+            String apellido = (String) jtUsuarios.getValueAt(filaSeleccionada, 2);
+            String genero = (String) jtUsuarios.getValueAt(filaSeleccionada, 3);
+            String telefono = (String) jtUsuarios.getValueAt(filaSeleccionada, 4);
+            String email = (String) jtUsuarios.getValueAt(filaSeleccionada, 5);
+            String fechaNac = (String) jtUsuarios.getValueAt(filaSeleccionada, 6);
+			
+			
 			muPantalla = new ModificarUsuario("Modificar Usuario");
+			//Metodo para mostrar los datos en la pantalla de ModificarUsuario
+			muPantalla.cargarDatos(idUsuario, nombre, apellido, genero, telefono, email, fechaNac);
+			
+			muPantalla.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosed(WindowEvent windowEvent) {
+                    // Cuando la ventana de modificar se cierra,
+                    // mandamos actualizar la tabla principal.
+                    actualizarTablaUsuarios();
+                }
+            });
+			
 			muPantalla.setVisible(true);
+		}
+		else if(e.getSource() == jbEliminarUsuario) {
+			int filaSeleccionada = jtUsuarios.getSelectedRow();
+			if(filaSeleccionada == -1) {
+				JOptionPane.showMessageDialog(this, "No hay usuario seleccionado a eliminar.", "Ningún usuario seleccionado", JOptionPane.WARNING_MESSAGE);
+                return;
+			}
+			int idUsuario = (Integer) jtUsuarios.getValueAt(filaSeleccionada, 0);
+			String nombre = (String) jtUsuarios.getValueAt(filaSeleccionada, 1);
+			String apellido = (String) jtUsuarios.getValueAt(filaSeleccionada, 2);
+			
+			try {
+				int respuesta = JOptionPane.showConfirmDialog(this, "¿Estas seguro de eliminar a "+nombre+ " "+apellido+"?\nSe eliminara se historial de prestamos", "CERRAR SESION", JOptionPane.YES_NO_OPTION);
+				if(respuesta == JOptionPane.YES_OPTION) {
+					DAOUsuarios.EliminarUsuarioPorId(idUsuario);
+					actualizarTablaUsuarios();
+					JOptionPane.showMessageDialog(this, 
+	                        "Usuario eliminado correctamente.", "Eliminacion Exitosa", JOptionPane.INFORMATION_MESSAGE);
+				}
+				else {
+					return;
+				}
+				
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
 		}
 		else if(e.getSource() == jbLimpiarUsuario) {
 			jtfBuscarUsuarios.setText("");
+			actualizarTablaUsuarios();
 		}
 		
 		//ELEMENTOS DE LIBROS
 		else if(e.getSource() == jbRegistrarLibro) {
 			rlPantalla = new RegistrarLibro ("Registrar Libro");
+            
+            // Añadimos el listener para actualizar al cerrar
+            rlPantalla.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosed(WindowEvent windowEvent) {
+                    actualizarTablaLibros(); // Llama al actualizador de libros
+                }
+            });
+            
 			rlPantalla.setVisible(true);
 		}
 		else if(e.getSource() == jbModificarLibro) {
+            int filaSeleccionada = jtLibros.getSelectedRow();
+            if(filaSeleccionada == -1) {
+                JOptionPane.showMessageDialog(this, "Por favor, selecciona un libro para modificar.", "Ningún libro seleccionado", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            
+            // Obtenemos datos de la JTable
+            int idLibro = (Integer) jtLibros.getValueAt(filaSeleccionada, 0);
+            String titulo = (String) jtLibros.getValueAt(filaSeleccionada, 1);
+            String autor = (String) jtLibros.getValueAt(filaSeleccionada, 2);
+            String categoria = (String) jtLibros.getValueAt(filaSeleccionada, 3);
+            int edicion = (Integer) jtLibros.getValueAt(filaSeleccionada, 4);
+            int stock = (Integer) jtLibros.getValueAt(filaSeleccionada, 5);
+
 			mlPantalla = new ModificarLibro ("Modificar Libro");
+            
+            // --- ¡AQUÍ ESTÁ LA CONEXIÓN! ---
+            // Llamamos al método 'cargarDatos' que acabamos de crear
+            mlPantalla.cargarDatos(idLibro, titulo, autor, categoria, edicion, stock);
+            
+            // Añadimos el listener para actualizar al cerrar
+            mlPantalla.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosed(WindowEvent windowEvent) {
+                    actualizarTablaLibros(); // Llama al actualizador de libros
+                }
+            });
+
 			mlPantalla.setVisible(true);
 		}
+		else if(e.getSource() == jbEliminarLibro) {
+            // --- CÓDIGO AÑADIDO (PARA QUE FUNCIONE ELIMINAR LIBRO) ---
+            int filaSeleccionada = jtLibros.getSelectedRow();
+            if(filaSeleccionada == -1) {
+                JOptionPane.showMessageDialog(this, "No hay libro seleccionado a eliminar.", "Ningún libro seleccionado", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            
+            int idLibro = (Integer) jtLibros.getValueAt(filaSeleccionada, 0);
+            String titulo = (String) jtLibros.getValueAt(filaSeleccionada, 1);
+            
+            try {
+                int respuesta = JOptionPane.showConfirmDialog(this, 
+                    "¿Estas seguro de eliminar el libro: "+titulo+"?", 
+                    "Confirmar Eliminación", JOptionPane.YES_NO_OPTION);
+                
+                if(respuesta == JOptionPane.YES_OPTION) {
+                    DAOLibros.EliminarLibroPorId(idLibro);
+                    actualizarTablaLibros(); // Actualiza la tabla
+                    JOptionPane.showMessageDialog(this, 
+                            "Libro eliminado correctamente.", "Eliminación Exitosa", JOptionPane.INFORMATION_MESSAGE);
+                }
+                
+            } catch (SQLException e1) {
+                // Esto capturará el error si el libro está en un Préstamo
+                JOptionPane.showMessageDialog(this, 
+                        "No se puede eliminar el libro. Probablemente está asignado a un préstamo.\nError: " + e1.getMessage(), 
+                        "Error de Base de Datos", JOptionPane.ERROR_MESSAGE);
+                e1.printStackTrace();
+            }
+        }
+		
+		
 		else if(e.getSource() == jbLimpiarLibro) {
 			jtfBuscarLibros.setText("");
+            // --- CORRECCIÓN ---
+            // Le decimos al checkbox que se desmarque
+            cbLibrosDisponibles.setSelected(false);
+			actualizarTablaLibros();
 		}
+		else if (e.getSource() == cbLibrosDisponibles) {
+            // Cada vez que se marca o desmarca, actualiza la tabla
+            actualizarTablaLibros();
+        }
+		
 	}
 }

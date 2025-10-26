@@ -1,24 +1,22 @@
 package objetos;
 
 public class Usuario {
-	private int IDUsuario;
 	private String Nombre;
 	private String Apellido;
 	private char Genero;
-	private int Telefono;
+	private String Telefono;
 	private String Email;
 	private String FechaNacimiento;
 	
 	//Constructor vacio
 	public Usuario() {
-		this(0,"","",'-',0,"","");
+		this("","",'-',"","","");
 	}
 
 	//Constructor con parametros
-	public Usuario(int iDUsuario, String nombre, String apellido, char genero, int telefono, String email,
+	public Usuario(String nombre, String apellido, char genero, String telefono, String email,
 			String fechaNacimiento) {
 		super();
-		IDUsuario = iDUsuario;
 		Nombre = nombre;
 		Apellido = apellido;
 		Genero = genero;
@@ -27,13 +25,6 @@ public class Usuario {
 		FechaNacimiento = fechaNacimiento;
 	}
 
-	public int getIDUsuario() {
-		return IDUsuario;
-	}
-
-	public void setIDUsuario(int iDUsuario) {
-		IDUsuario = iDUsuario;
-	}
 
 	public String getNombre() {
 		return Nombre;
@@ -59,11 +50,11 @@ public class Usuario {
 		Genero = genero;
 	}
 
-	public int getTelefono() {
+	public String getTelefono() {
 		return Telefono;
 	}
 
-	public void setTelefono(int telefono) {
+	public void setTelefono(String telefono) {
 		Telefono = telefono;
 	}
 

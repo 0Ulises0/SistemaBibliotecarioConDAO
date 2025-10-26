@@ -6,26 +6,33 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException; // --- IMPORTADO ---
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane; // --- IMPORTADO ---
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+
+import DAO.DAOLibros; // --- IMPORTADO ---
+import objetos.Libro; // --- IMPORTADO ---
 
 public class ModificarLibro extends JFrame implements ActionListener {
 	
 private static final long serialVersionUID = 1L;
 	
 	private JPanel jpContenedor;
-	private JLabel jlModificarLibro, jlTitulo, jlAutor, jlCategoria, jlEdicion; 
-	private JTextField jtfTitulo, jtfAutor, jtfCategoria, jtfEdicion;
+	private JLabel jlModificarLibro, jlTitulo, jlAutor, jlCategoria, jlEdicion, jlStock; 
+	private JTextField jtfTitulo, jtfAutor, jtfCategoria, jtfEdicion, jtfStock;
 	private JButton jbModificarLibro, jbCancelar;
+    
+    // --- AÑADIDO: Campo para guardar el ID ---
+    private int idLibroModificar;
 	
 	public ModificarLibro(String title){
 		super(title);
 		setSize(800,600);
-		//setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		setLocationRelativeTo(null);
 		
 		contenedorPrincipal();
@@ -42,7 +49,9 @@ private static final long serialVersionUID = 1L;
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.insets = new Insets(5,5,5,5);
 		
-		gbc.gridwidth = 2;
+        // ... (Tu código de labels y textfields es correcto) ...
+        // ... (Titulo, Autor, Categoria, Edicion, Stock) ...
+        gbc.gridwidth = 2;
 		gbc.anchor = GridBagConstraints.CENTER;
 		
 		gbc.gridx = 0;
@@ -95,24 +104,89 @@ private static final long serialVersionUID = 1L;
 		jtfEdicion = new JTextField(15);
 		jpContenedor.add(jtfEdicion, gbc);
 		
-		gbc.gridwidth = 2;
-		gbc.anchor = GridBagConstraints.CENTER;
-		
-		//BOTONES
+		//Stock
 		gbc.gridx = 0;
 		gbc.gridy = 5;
-		jbModificarLibro = new JButton("Modificar");
-		jpContenedor.add(jbModificarLibro, gbc);
+		jlStock = new JLabel("Stock:");
+		jpContenedor.add(jlStock, gbc);
+		gbc.gridx = 1;
+		gbc.gridy = 5;
+		jtfStock = new JTextField(15);
+		jpContenedor.add(jtfStock, gbc);
+		
+		
+		gbc.gridwidth = 2;
+		gbc.anchor = GridBagConstraints.CENTER;
+
+		//BOTONES
 		gbc.gridx = 0;
 		gbc.gridy = 6;
+		jbModificarLibro = new JButton("Guardar Cambios"); // Texto cambiado
+        jbModificarLibro.addActionListener(this); // --- AÑADIDO ---
+		jpContenedor.add(jbModificarLibro, gbc);
+		gbc.gridx = 0;
+		gbc.gridy = 7;
 		jbCancelar = new JButton("Cancelar");
+        jbCancelar.addActionListener(this); // --- AÑADIDO ---
 		jpContenedor.add(jbCancelar, gbc);
 	}
+    
+    // --- MÉTODO NUEVO ---
+    /**
+     * Recibe los datos desde la pantalla Principal y los carga en los campos.
+     */
+    public void cargarDatos(int id, String titulo, String autor, String categoria, int edicion, int stock) {
+        // 1. Guardar el ID para usarlo al momento de guardar
+        this.idLibroModificar = id;
+
+        // 2. Llenar los campos de texto
+        jtfTitulo.setText(titulo);
+        jtfAutor.setText(autor);
+        jtfCategoria.setText(categoria);
+        
+        // 3. Convertir los 'int' a 'String' para los JTextField
+        jtfEdicion.setText(String.valueOf(edicion));
+        jtfStock.setText(String.valueOf(stock));
+    }
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
+		if (e.getSource() == jbModificarLibro) {
+            try {
+                // 1. Obtener los datos de los campos
+                String titulo = jtfTitulo.getText();
+                String autor = jtfAutor.getText();
+                String categoria = jtfCategoria.getText();
+                
+                // 2. Validar (básico)
+                if (titulo.isEmpty() || autor.isEmpty() || categoria.isEmpty() || jtfEdicion.getText().isEmpty() || jtfStock.getText().isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "Todos los campos son obligatorios.", "Error de Validación", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
 
+                // 3. Convertir los números
+                int edicion = Integer.parseInt(jtfEdicion.getText());
+                int stock = Integer.parseInt(jtfStock.getText());
+
+                // 4. Crear el objeto Libro
+                Libro libroModificado = new Libro(titulo, autor, categoria, edicion, stock);
+
+                // 5. Llamar al DAO para guardar (usando el ID guardado)
+                DAOLibros.ModificarLibro(libroModificado, this.idLibroModificar);
+                
+                // 6. Mostrar éxito y cerrar
+                JOptionPane.showMessageDialog(this, "Libro modificado correctamente.", "Modificación Exitosa", JOptionPane.INFORMATION_MESSAGE);
+                this.dispose(); // Cierra esta ventana
+
+            } catch (NumberFormatException nfe) {
+                JOptionPane.showMessageDialog(this, "Error: 'Edición' y 'Stock' deben ser números válidos.", "Error de Formato", JOptionPane.ERROR_MESSAGE);
+            } catch (SQLException sqle) {
+                JOptionPane.showMessageDialog(this, "Error al guardar en la base de datos: " + sqle.getMessage(), "Error de Base de Datos", JOptionPane.ERROR_MESSAGE);
+                sqle.printStackTrace();
+            }
+
+        } else if (e.getSource() == jbCancelar) {
+            this.dispose(); // Cierra esta ventana
+        }
+	}
 }

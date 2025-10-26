@@ -1,7 +1,6 @@
 package objetos;
 
 public class Libro {
-	private int IDLibro;
 	private String Titulo;
 	private String Autor;
 	private String Categoria;
@@ -9,29 +8,17 @@ public class Libro {
 	private int Stock;
 	
 	public Libro() {
-		this(0,"","","",0,0);
+		this("","","",0,0);
 	}
 	
-	public Libro(int iDLibro, String titulo, String autor, String categoria, int edicion, int stock) {
+	public Libro(String titulo, String autor, String categoria, int edicion, int stock) {
 		super();
-		IDLibro = iDLibro;
 		Titulo = titulo;
 		Autor = autor;
 		Categoria = categoria;
 		Edicion = edicion;
 		Stock = stock;
 	}
-
-
-	public int getIDLibro() {
-		return IDLibro;
-	}
-
-
-	public void setIDLibro(int iDLibro) {
-		IDLibro = iDLibro;
-	}
-
 
 	public String getTitulo() {
 		return Titulo;
