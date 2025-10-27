@@ -45,7 +45,7 @@ public class DAOPresYDev extends ConexionDB{
 	 		}
 
 	 	} catch (Exception e) {
-	 		throw new Exception("Error al consultar prestamo: " + e.getMessage());
+	 		throw new Exception("E: " + e.getMessage());
 	 	} finally {
 	 		if (rs != null) rs.close();
 	 		if (ps != null) ps.close();
@@ -90,7 +90,7 @@ public class DAOPresYDev extends ConexionDB{
 	 			listado.add(fila);
 	 		}
 	 	} catch (Exception e) {
-	 		throw new Exception("Error al buscar prestamo: " + e.getMessage());
+	 		throw new Exception("E: " + e.getMessage());
 	 	} finally {
 	 		if (rs != null) rs.close();
 	 		if (ps != null) ps.close();
@@ -126,7 +126,7 @@ public class DAOPresYDev extends ConexionDB{
                     throw new Exception("No hay stock disponible para el libro seleccionado.");
                 }
             } else {
-                throw new Exception("No se encontró el libro (ID: " + idLibro + ").");
+                throw new Exception("No se encontro el libro ( " + idLibro + ").");
             }
             
 
@@ -167,9 +167,15 @@ public class DAOPresYDev extends ConexionDB{
         PreparedStatement psSumarStock = null;
         ResultSet rs = null;
         
+        //Consulta para verificar si existe el prestamo
         String sqlVerificar = "SELECT IDLibro, Estado FROM Prestamo WHERE IDPrestamo = ?";
+        
+        //Consulta para actualizar el estado del prestamo
         String sqlActualizarPrestamo = "UPDATE Prestamo SET Estado = 'Devuelto', FechaDevolucion = GETDATE() WHERE IDPrestamo = ?";
+        
+        //Consulta para sumar el stock del prestamo cuando se devuelve
         String sqlSumarStock = "UPDATE Libro SET Stock = Stock + 1 WHERE IDLibro = ?";
+        
         
         int idLibroDevuelto = -1;
 
@@ -190,7 +196,7 @@ public class DAOPresYDev extends ConexionDB{
                     throw new Exception("Este préstamo ya ha sido devuelto.");
                 }
             } else {
-                throw new Exception("No se encontró el préstamo (ID: " + idPrestamo + ").");
+                throw new Exception("No se encontró el prestamo (" + idPrestamo + ").");
             }
             
 

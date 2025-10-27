@@ -389,9 +389,9 @@ public class Principal extends JFrame implements ActionListener {
 		jbBuscarUsuario = new JButton(new ImageIcon(getClass().getResource("/imagenes/buscarusuario.png")));
 		jbBuscarUsuario.setPreferredSize(new java.awt.Dimension(40, 40));
 		jbBuscarUsuario.addActionListener(this);
-		jpUsuarios.add(jbBuscarUsuario, gbc);
+		//jpUsuarios.add(jbBuscarUsuario, gbc);
 		 
-		gbc.gridx = 3;
+		gbc.gridx = 2;
 		gbc.gridy = 2;
 		jbLimpiarUsuario = new JButton(new ImageIcon(getClass().getResource("/imagenes/limpiar.png")));
 		jbLimpiarUsuario.setPreferredSize(new java.awt.Dimension(40, 40));
@@ -457,9 +457,9 @@ public class Principal extends JFrame implements ActionListener {
 		jbBuscarLibro = new JButton(new ImageIcon(getClass().getResource("/imagenes/buscarlibro.png")));
 		jbBuscarLibro.setPreferredSize(new java.awt.Dimension(40, 40));
 		jbBuscarLibro.addActionListener(this);
-		jpLibros.add(jbBuscarLibro, gbc);
+		//jpLibros.add(jbBuscarLibro, gbc);
 		 
-		gbc.gridx = 3;
+		gbc.gridx = 2;
 		gbc.gridy = 2;
 		jbLimpiarLibro = new JButton(new ImageIcon(getClass().getResource("/imagenes/limpiar.png")));
 		jbLimpiarLibro.setPreferredSize(new java.awt.Dimension(40, 40));

@@ -95,7 +95,7 @@ public class Logeo extends JFrame implements ActionListener {
 		if(e.getSource() == jbEntrar) {
 			
 			//Confirmar Usuario y Contraseña
-			if(txtUsuario.getText().equals("Ulises") && txtContrasena.getText().equals("1234")) {
+			if(txtUsuario.getText().equals("equipo") && txtContrasena.getText().equals("10")) {
 				try {
 					SistemaBibliotecario = new Principal ("SISTEMA BIBLIOTECARIO");
 					SistemaBibliotecario.setVisible(true);
