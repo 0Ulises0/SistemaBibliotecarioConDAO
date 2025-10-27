@@ -41,6 +41,7 @@ import pantallasUsuarios.RegistrarUsuario;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 
+
 public class Principal extends JFrame implements ActionListener {
 
 	private static final long serialVersionUID = 1L;
@@ -102,7 +103,7 @@ public class Principal extends JFrame implements ActionListener {
 	private JTextField jtfBuscarUsuarios;
 	//Tabla de Usuarios
 	private JTable jtUsuarios;
-	//Scroll para la tabla de Usuarios
+	//Scrol para la tabla de Usuarios
 	private JScrollPane jspUsuarios;
 	
 	//COMPONENTES PARA EL PANEL DE LIBROS
@@ -147,7 +148,7 @@ public class Principal extends JFrame implements ActionListener {
 	//COLUMNAS LIBRO
 	private String [] columnasLibro = {"ID", "TITULO", "AUTOR", "CATEGORIA", "EDICION", "STOCK"};
 	//COLUMNAS PRESTAMI
-	private String [] columnasPrestamo = {"NOMBRE", "LIBRO", "PRESTAMO", "DEVOLUCION", "ESTADO"};
+	private String [] columnasPrestamo = {"ID", "NOMBRE", "LIBRO", "PRESTAMO", "DEVOLUCION", "ESTADO"};
 	
 	
 	public Principal(String title) throws Exception {
@@ -477,7 +478,6 @@ public class Principal extends JFrame implements ActionListener {
 		GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
 
-        // --- FILA 0: TÍTULO PRINCIPAL ---
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = 3; // Ocupa las 3 columnas
@@ -486,14 +486,12 @@ public class Principal extends JFrame implements ActionListener {
         jlGestionPrestYDev.setFont(new Font("Arial", Font.PLAIN, 24));
         jpPrestYDev.add(jlGestionPrestYDev, gbc);
 
-        // --- Reseteamos gbc ---
         gbc.gridwidth = 1;
         gbc.anchor = GridBagConstraints.WEST;
         gbc.fill = GridBagConstraints.NONE;
         gbc.weightx = 0.0;
         gbc.weighty = 0.0;
 
-        // --- FILA 1: ETIQUETAS "USUARIOS" Y "LIBROS" ---
         gbc.gridx = 0;
         gbc.gridy = 1;
         jlUsuariosPrestYDev = new JLabel("USUARIOS:");
@@ -502,126 +500,132 @@ public class Principal extends JFrame implements ActionListener {
         gbc.gridx = 1;
         gbc.gridy = 1;
         jlLibrosPrestYDev = new JLabel("LIBROS:");
-        jpPrestYDev.add(jlLibrosPrestYDev, gbc);
-        // Columna 2 (gridx=2) en esta fila queda vacía
+        jpPrestYDev.add(jlLibrosPrestYDev, gbc);        
 
-        
-        // --- FILA 2: JTEXTFIELDS Y BOTONES LIMPIAR (Arriba) ---
-        //   *** INICIO DE CAMBIOS (FILA 2) ***
-        
-        // --- Panel para Búsqueda de Usuarios (TextField + Botón) ---
-        JPanel pnlBusquedaUsuario = new JPanel(new BorderLayout(5, 0)); // 5px de gap horizontal
+        JPanel pnlBusquedaUsuario = new JPanel(new BorderLayout(5, 0)); 
         jtfBuscarUsuariosPrestYDev = new JTextField(15);
+        jtfBuscarUsuariosPrestYDev.addKeyListener(new java.awt.event.KeyAdapter() {
+		    public void keyReleased(java.awt.event.KeyEvent evt) {
+		        jtfBuscarUsuariosPrestYDevKeyReleased(evt);
+		    }
+		});
         jbLimpiarUsuariosPrestYDev = new JButton(new ImageIcon(getClass().getResource("/imagenes/limpiar.png")));
         jbLimpiarUsuariosPrestYDev.setPreferredSize(new java.awt.Dimension(40, 40));
+        jbLimpiarUsuariosPrestYDev.addActionListener(this);
         pnlBusquedaUsuario.add(jtfBuscarUsuariosPrestYDev, BorderLayout.CENTER); // El TextField se estira
         pnlBusquedaUsuario.add(jbLimpiarUsuariosPrestYDev, BorderLayout.EAST);  // El Botón se pega a la derecha
-
+        jpPrestYDev.add(pnlBusquedaUsuario, gbc);
+        
         gbc.gridx = 0;
         gbc.gridy = 2;
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.weightx = 1.0; // Damos peso a esta columna para que crezca
+        gbc.weightx = 1.0; //peso a esta columna para que crezca
         jpPrestYDev.add(pnlBusquedaUsuario, gbc);
 
-        // --- Panel para Búsqueda de Libros (TextField + Botón) ---
-        JPanel pnlBusquedaLibro = new JPanel(new BorderLayout(5, 0)); // 5px de gap horizontal
+        JPanel pnlBusquedaLibro = new JPanel(new BorderLayout(5, 0));
         jtfBuscarLibrosPrestYDev = new JTextField(15);
+        jtfBuscarLibrosPrestYDev.addKeyListener(new java.awt.event.KeyAdapter() {
+		    public void keyReleased(java.awt.event.KeyEvent evt) {
+		        jtfBuscarLibrosPrestYDevKeyReleased(evt);
+		    }
+		});
         jbLimpiarLibrosPrestYDev = new JButton(new ImageIcon(getClass().getResource("/imagenes/limpiar.png")));
         jbLimpiarLibrosPrestYDev.setPreferredSize(new java.awt.Dimension(40, 40));
+        jbLimpiarLibrosPrestYDev.addActionListener(this);
         pnlBusquedaLibro.add(jtfBuscarLibrosPrestYDev, BorderLayout.CENTER);
         pnlBusquedaLibro.add(jbLimpiarLibrosPrestYDev, BorderLayout.EAST);
         
         gbc.gridx = 1;
         gbc.gridy = 2;
-        // gbc.fill y gbc.weightx ya están seteados
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1.0;
         jpPrestYDev.add(pnlBusquedaLibro, gbc);
 
-        // La columna 2 (gridx=2) queda libre en esta fila
         gbc.gridx = 2;
         gbc.gridy = 2;
-        gbc.weightx = 0.0; // Columna de botones no debe crecer
-        
-        //   *** FIN DE CAMBIOS (FILA 2) ***
+        gbc.weightx = 0.0;
 
-
-        // --- FILA 3: TABLAS Y BOTÓN PRESTAR ---
         gbc.gridx = 0;
         gbc.gridy = 3;
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 1.0; // La columna 0 puede crecer
         gbc.weighty = 1.0; // La fila 3 puede crecer mucho
         jtUsuariosPrestYDev = new JTable(DAOUsuarios.ConsultarTodo(), columnasUsuario);
+        jtUsuariosPrestYDev.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         jspUsuariosPrestYDev = new JScrollPane(jtUsuariosPrestYDev);
         jpPrestYDev.add(jspUsuariosPrestYDev, gbc);
 
         gbc.gridx = 1;
         gbc.gridy = 3;
-        // gbc.fill, weighty, weightx ya están seteados
+
         jtLibrosPrestYDev = new JTable(DAOLibros.ConsultarTodo(true), columnasLibro);
+        jtLibrosPrestYDev.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         jspLibrosPrestYDev = new JScrollPane(jtLibrosPrestYDev);
         jpPrestYDev.add(jspLibrosPrestYDev, gbc);
 
-        // --- Botón Prestar en la columna de acciones (Correcto como lo tenías) ---
         gbc.gridx = 2;
         gbc.gridy = 3;
-        gbc.fill = GridBagConstraints.HORIZONTAL; // Que el botón llene su celda
-        gbc.weightx = 0.0; // Columna de botones no crece
-        gbc.weighty = 0.0; // No crece verticalmente
-        gbc.anchor = GridBagConstraints.NORTH; // Se alinea con la parte superior
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 0.0;
+        gbc.weighty = 0.0;
+        gbc.anchor = GridBagConstraints.NORTH;
         jbPrestar = new JButton("PRESTAR");
+        jbPrestar.addActionListener(this);
         jpPrestYDev.add(jbPrestar, gbc);
 
-        // --- FILA 4: ETIQUETA "PRESTAMOS Y DEVOLUCIONES" ---
         gbc.gridx = 0;
         gbc.gridy = 4;
-        gbc.gridwidth = 3; // Abarca las 3 columnas
-        gbc.weightx = 0.0; // Reseteamos
-        gbc.weighty = 0.0; // Reseteamos
+        gbc.gridwidth = 3;
+        gbc.weightx = 0.0;
+        gbc.weighty = 0.0;
         gbc.fill = GridBagConstraints.NONE;
         gbc.anchor = GridBagConstraints.CENTER;
         jlPrestYDevPrestYDev = new JLabel("Prestamos y Devoluciones");
         jpPrestYDev.add(jlPrestYDevPrestYDev, gbc);
 
-        // --- FILA 5: JTEXTFIELD+LIMPIAR Y BOTÓN DEVOLVER (Abajo) ---
-        //   *** INICIO DE CAMBIOS (FILA 5) ***
-        gbc.gridwidth = 1; // Reseteamos
+        gbc.gridwidth = 1;
 
-        // --- Panel para Búsqueda de Préstamos (TextField + Botón Limpiar) ---
-        JPanel pnlBusquedaPrestamo = new JPanel(new BorderLayout(5, 0)); // 5px de gap
+        JPanel pnlBusquedaPrestamo = new JPanel(new BorderLayout(5, 0));
         jtfBuscarPrestYDev = new JTextField(15);
+        jtfBuscarPrestYDev.addKeyListener(new java.awt.event.KeyAdapter() {
+		    public void keyReleased(java.awt.event.KeyEvent evt) {
+		        jtfBuscarPrestYDevKeyReleased(evt);
+		    }
+		});
         jbLimpiarPrestYDev = new JButton(new ImageIcon(getClass().getResource("/imagenes/limpiar.png")));
         jbLimpiarPrestYDev.setPreferredSize(new java.awt.Dimension(40, 40));
+        jbLimpiarPrestYDev.addActionListener(this);
         pnlBusquedaPrestamo.add(jtfBuscarPrestYDev, BorderLayout.CENTER);
         pnlBusquedaPrestamo.add(jbLimpiarPrestYDev, BorderLayout.EAST);
         
         gbc.gridx = 0;
         gbc.gridy = 5;
-        gbc.gridwidth = 2; // El panel de búsqueda ocupa las 2 columnas de las tablas
+        gbc.gridwidth = 2; 
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.weightx = 1.0; // Que crezca
+        gbc.weightx = 1.0;
         jpPrestYDev.add(pnlBusquedaPrestamo, gbc);
 
-        // --- Botón Devolver en la columna de acciones ---
         gbc.gridx = 2;
         gbc.gridy = 6;
-        gbc.gridwidth = 1; // Ocupa solo 1 columna
-        gbc.fill = GridBagConstraints.HORIZONTAL; // Que llene su celda
-        gbc.weightx = 0.0; // Columna de botones no crece
-        gbc.anchor = GridBagConstraints.NORTH; // Alinear con el botón Prestar
+        gbc.gridwidth = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL; 
+        gbc.weightx = 0.0; 
+        gbc.anchor = GridBagConstraints.NORTH;
         jbDevolver = new JButton("DEVOLVER");
+        jbDevolver.addActionListener(this);
         jpPrestYDev.add(jbDevolver, gbc);
-        
-        //   *** FIN DE CAMBIOS (FILA 5) ***
 
-
-        // --- FILA 6: TABLA DE PRESTAMOS ---
         gbc.gridx = 0;
         gbc.gridy = 6;
-        gbc.gridwidth = 2; // Abarca las 3 columnas
+        gbc.gridwidth = 2;
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 1.0;
-        gbc.weighty = 1.0; // Que la tabla de abajo también crezca
+        gbc.weighty = 1.0;
         jtPrestYDev = new JTable(DAOPresYDev.ConsultarTodo(), columnasPrestamo);
+        jtPrestYDev.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        jtPrestYDev.getColumnModel().getColumn(0).setMaxWidth(0);
+        jtPrestYDev.getColumnModel().getColumn(0).setMinWidth(0);
+        jtPrestYDev.getColumnModel().getColumn(0).setPreferredWidth(0);
         jspPrestYDev = new JScrollPane(jtPrestYDev);
         jpPrestYDev.add(jspPrestYDev, gbc);
 	}
@@ -629,14 +633,13 @@ public class Principal extends JFrame implements ActionListener {
 	//Metodo para buscar Usuarios mientras se escribe
 	private void jtfBuscarUsuariosKeyReleased(java.awt.event.KeyEvent evt) {
 	    try {
-	        // 1. Obtener el texto que el usuario está escribiendo
+
 	        String textoBusqueda = jtfBuscarUsuarios.getText();
 	        
-	        // 2. Llamar al método del DAO que acabamos de crear
+
 	        Object[][] datos = DAOUsuarios.BuscarUsuario(textoBusqueda);
 	        
-	        // 3. Actualizar la JTable con los nuevos datos
-	        // (columnasUsuario es el array de String que ya tienes definido en tu clase Principal)
+
 	        jtUsuarios.setModel(new DefaultTableModel(datos, columnasUsuario));
 	        
 	    } catch (Exception e) {
@@ -647,14 +650,13 @@ public class Principal extends JFrame implements ActionListener {
 	//Metodo para actualizar la tabla de usuarios 
 	public void actualizarTablaUsuarios() {
 	    try {
-	        // 1. Obtiene los datos frescos de la base de datos
+
 	        Object[][] datos = DAOUsuarios.ConsultarTodo();
 	        
-	        // 2. Asigna los nuevos datos a la tabla
-	        // (columnasUsuario es el array de String que ya tienes definido)
+
 	        jtUsuarios.setModel(new DefaultTableModel(datos, columnasUsuario));
 	        
-	        // 3. Volvemos a aplicar la configuración de selección (sin método extra)
+
 	        jtUsuarios.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 	        
 	    } catch (Exception e) {
@@ -669,25 +671,25 @@ public class Principal extends JFrame implements ActionListener {
 	//Metodos para el panel de libros
 	public void actualizarTablaLibros() {
 	    try {
-	        // 1. Obtiene los valores de los filtros
+
 	        String textoBusqueda = jtfBuscarLibros.getText();
 	        boolean soloDisponibles = cbLibrosDisponibles.isSelected();
 	        
 	        Object[][] datos;
 	        
-	        // 2. Decide qué método DAO llamar
+
 	        if (textoBusqueda.isEmpty()) {
-	            // Si no hay texto, consulta todo (respetando el checkbox)
+
 	            datos = DAOLibros.ConsultarTodo(soloDisponibles);
 	        } else {
-	            // Si hay texto, busca por título (respetando el checkbox)
+
 	            datos = DAOLibros.BuscarLibro(textoBusqueda, soloDisponibles);
 	        }
 	        
-	        // 3. Asigna los nuevos datos a la tabla
+
 	        jtLibros.setModel(new DefaultTableModel(datos, columnasLibro));
 	        
-	        // 4. Aplicar la configuración de selección
+
 	        jtLibros.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 	        
 	    } catch (Exception e) {
@@ -704,6 +706,88 @@ public class Principal extends JFrame implements ActionListener {
 	    // Cada vez que se teclea, llama al actualizador
         actualizarTablaLibros();
 	}
+	
+	//METODOS DEL PANEL DE PRESTAMOS
+	public void actualizarTablaUsuariosPrestamos() {
+	    try {
+	        Object[][] datos = DAOUsuarios.ConsultarTodo();
+	        jtUsuariosPrestYDev.setModel(new DefaultTableModel(datos, columnasUsuario));
+            // Aplicar configuración
+            jtUsuariosPrestYDev.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	}
+    
+
+	public void actualizarTablaLibrosPrestamos() {
+	    try {
+	        Object[][] datos = DAOLibros.ConsultarTodo(true); // true = solo disponibles
+	        jtLibrosPrestYDev.setModel(new DefaultTableModel(datos, columnasLibro));
+            // Aplicar configuración
+            jtLibrosPrestYDev.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	}
+    
+
+	public void actualizarTablaPrestamos() {
+	    try {
+	        Object[][] datos = DAOPresYDev.ConsultarTodo();
+	        jtPrestYDev.setModel(new DefaultTableModel(datos, columnasPrestamo));
+            
+
+            jtPrestYDev.getColumnModel().getColumn(0).setMaxWidth(0);
+            jtPrestYDev.getColumnModel().getColumn(0).setMinWidth(0);
+            jtPrestYDev.getColumnModel().getColumn(0).setPreferredWidth(0);
+            
+            // Aplicar configuración
+            jtPrestYDev.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	}
+    
+    
+    private void jtfBuscarUsuariosPrestYDevKeyReleased(java.awt.event.KeyEvent evt) {
+        try {
+            String texto = jtfBuscarUsuariosPrestYDev.getText();
+            Object[][] datos = DAOUsuarios.BuscarUsuario(texto);
+            jtUsuariosPrestYDev.setModel(new DefaultTableModel(datos, columnasUsuario));
+            jtUsuariosPrestYDev.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    private void jtfBuscarLibrosPrestYDevKeyReleased(java.awt.event.KeyEvent evt) {
+        try {
+            String texto = jtfBuscarLibrosPrestYDev.getText();
+            // true = buscar solo disponibles
+            Object[][] datos = DAOLibros.BuscarLibro(texto, true); 
+            jtLibrosPrestYDev.setModel(new DefaultTableModel(datos, columnasLibro));
+            jtLibrosPrestYDev.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    private void jtfBuscarPrestYDevKeyReleased(java.awt.event.KeyEvent evt) {
+        try {
+            String texto = jtfBuscarPrestYDev.getText();
+            Object[][] datos = DAOPresYDev.BuscarPrestamo(texto);
+            jtPrestYDev.setModel(new DefaultTableModel(datos, columnasPrestamo));
+            // Ocultar ID
+            jtPrestYDev.getColumnModel().getColumn(0).setMaxWidth(0);
+            jtPrestYDev.getColumnModel().getColumn(0).setMinWidth(0);
+            jtPrestYDev.getColumnModel().getColumn(0).setPreferredWidth(0);
+            jtPrestYDev.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 	
 	
 	
@@ -750,8 +834,7 @@ public class Principal extends JFrame implements ActionListener {
 			ruPantalla.addWindowListener(new WindowAdapter() {
                 @Override
                 public void windowClosed(WindowEvent windowEvent) {
-                    // Cuando la ventana de registro se cierra,
-                    // mandamos actualizar la tabla principal.
+
                     actualizarTablaUsuarios(); 
                 }
             });
@@ -762,13 +845,13 @@ public class Principal extends JFrame implements ActionListener {
 			
 			int filaSeleccionada = jtUsuarios.getSelectedRow();
 			
-			//Comprobar que haya una fila seleccionada
+
 			if(filaSeleccionada == -1) {
 				JOptionPane.showMessageDialog(this, "Por favor, selecciona un usuario de la tabla para modificar.", "Ningún usuario seleccionado", JOptionPane.WARNING_MESSAGE);
                 return;
 			}
 			
-			//Para obetener los datos de la tabla se hace lo siguiente 
+
 			int idUsuario = (Integer) jtUsuarios.getValueAt(filaSeleccionada, 0);
 			String nombre = (String) jtUsuarios.getValueAt(filaSeleccionada, 1);
             String apellido = (String) jtUsuarios.getValueAt(filaSeleccionada, 2);
@@ -779,14 +862,13 @@ public class Principal extends JFrame implements ActionListener {
 			
 			
 			muPantalla = new ModificarUsuario("Modificar Usuario");
-			//Metodo para mostrar los datos en la pantalla de ModificarUsuario
+
 			muPantalla.cargarDatos(idUsuario, nombre, apellido, genero, telefono, email, fechaNac);
 			
 			muPantalla.addWindowListener(new WindowAdapter() {
                 @Override
                 public void windowClosed(WindowEvent windowEvent) {
-                    // Cuando la ventana de modificar se cierra,
-                    // mandamos actualizar la tabla principal.
+
                     actualizarTablaUsuarios();
                 }
             });
@@ -828,11 +910,11 @@ public class Principal extends JFrame implements ActionListener {
 		else if(e.getSource() == jbRegistrarLibro) {
 			rlPantalla = new RegistrarLibro ("Registrar Libro");
             
-            // Añadimos el listener para actualizar al cerrar
+
             rlPantalla.addWindowListener(new WindowAdapter() {
                 @Override
                 public void windowClosed(WindowEvent windowEvent) {
-                    actualizarTablaLibros(); // Llama al actualizador de libros
+                    actualizarTablaLibros();
                 }
             });
             
@@ -845,7 +927,7 @@ public class Principal extends JFrame implements ActionListener {
                 return;
             }
             
-            // Obtenemos datos de la JTable
+
             int idLibro = (Integer) jtLibros.getValueAt(filaSeleccionada, 0);
             String titulo = (String) jtLibros.getValueAt(filaSeleccionada, 1);
             String autor = (String) jtLibros.getValueAt(filaSeleccionada, 2);
@@ -855,22 +937,21 @@ public class Principal extends JFrame implements ActionListener {
 
 			mlPantalla = new ModificarLibro ("Modificar Libro");
             
-            // --- ¡AQUÍ ESTÁ LA CONEXIÓN! ---
-            // Llamamos al método 'cargarDatos' que acabamos de crear
+
             mlPantalla.cargarDatos(idLibro, titulo, autor, categoria, edicion, stock);
             
             // Añadimos el listener para actualizar al cerrar
             mlPantalla.addWindowListener(new WindowAdapter() {
                 @Override
                 public void windowClosed(WindowEvent windowEvent) {
-                    actualizarTablaLibros(); // Llama al actualizador de libros
+                    actualizarTablaLibros(); 
                 }
             });
 
 			mlPantalla.setVisible(true);
 		}
 		else if(e.getSource() == jbEliminarLibro) {
-            // --- CÓDIGO AÑADIDO (PARA QUE FUNCIONE ELIMINAR LIBRO) ---
+
             int filaSeleccionada = jtLibros.getSelectedRow();
             if(filaSeleccionada == -1) {
                 JOptionPane.showMessageDialog(this, "No hay libro seleccionado a eliminar.", "Ningún libro seleccionado", JOptionPane.WARNING_MESSAGE);
@@ -887,15 +968,15 @@ public class Principal extends JFrame implements ActionListener {
                 
                 if(respuesta == JOptionPane.YES_OPTION) {
                     DAOLibros.EliminarLibroPorId(idLibro);
-                    actualizarTablaLibros(); // Actualiza la tabla
+                    actualizarTablaLibros(); 
                     JOptionPane.showMessageDialog(this, 
                             "Libro eliminado correctamente.", "Eliminación Exitosa", JOptionPane.INFORMATION_MESSAGE);
                 }
                 
             } catch (SQLException e1) {
-                // Esto capturará el error si el libro está en un Préstamo
+
                 JOptionPane.showMessageDialog(this, 
-                        "No se puede eliminar el libro. Probablemente está asignado a un préstamo.\nError: " + e1.getMessage(), 
+                        "No se puede eliminar el libro\nError: " + e1.getMessage(), 
                         "Error de Base de Datos", JOptionPane.ERROR_MESSAGE);
                 e1.printStackTrace();
             }
@@ -904,14 +985,104 @@ public class Principal extends JFrame implements ActionListener {
 		
 		else if(e.getSource() == jbLimpiarLibro) {
 			jtfBuscarLibros.setText("");
-            // --- CORRECCIÓN ---
-            // Le decimos al checkbox que se desmarque
+
             cbLibrosDisponibles.setSelected(false);
 			actualizarTablaLibros();
 		}
 		else if (e.getSource() == cbLibrosDisponibles) {
-            // Cada vez que se marca o desmarca, actualiza la tabla
+
             actualizarTablaLibros();
+        }
+		else if(e.getSource() == jbPrestar) {
+
+            int filaUsuario = jtUsuariosPrestYDev.getSelectedRow();
+            if (filaUsuario == -1) {
+                JOptionPane.showMessageDialog(this, "Debe seleccionar un usuario.", "Error", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            
+
+            int filaLibro = jtLibrosPrestYDev.getSelectedRow();
+            if (filaLibro == -1) {
+                JOptionPane.showMessageDialog(this, "Debe seleccionar un libro.", "Error", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            
+            int idUsuario = (Integer) jtUsuariosPrestYDev.getValueAt(filaUsuario, 0);
+            int idLibro = (Integer) jtLibrosPrestYDev.getValueAt(filaLibro, 0);
+            
+            // 4. Confirmar y ejecutar
+            String nombreUsuario = (String) jtUsuariosPrestYDev.getValueAt(filaUsuario, 1);
+            String tituloLibro = (String) jtLibrosPrestYDev.getValueAt(filaLibro, 1);
+            
+            int respuesta = JOptionPane.showConfirmDialog(this, 
+                    "¿Confirmar préstamo?\n\nUsuario: " + nombreUsuario + "\nLibro: " + tituloLibro,
+                    "Confirmar Préstamo", 
+                    JOptionPane.YES_NO_OPTION);
+            
+            if (respuesta == JOptionPane.YES_OPTION) {
+                try {
+                    // Llamar al DAO que maneja la transacción
+                    DAOPresYDev.RealizarPrestamo(idUsuario, idLibro);
+                    
+                    JOptionPane.showMessageDialog(this, "Préstamo realizado con éxito.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                    
+
+                    actualizarTablaLibrosPrestamos(); // El stock cambió
+                    actualizarTablaPrestamos();       // Hay un nuevo préstamo
+                    actualizarTablaLibros(); // Actualizar el panel de Libros también
+                    
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(this, "Error al realizar el préstamo:\n" + ex.getMessage(), "Error de Préstamo", JOptionPane.ERROR_MESSAGE);
+                    ex.printStackTrace();
+                }
+            }
+        }
+        else if(e.getSource() == jbDevolver) {
+
+            int filaPrestamo = jtPrestYDev.getSelectedRow();
+            if (filaPrestamo == -1) {
+                JOptionPane.showMessageDialog(this, "Debe seleccionar un préstamo de la tabla inferior para devolver.", "Error", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            
+
+            int idPrestamo = (Integer) jtPrestYDev.getValueAt(filaPrestamo, 0);
+            
+
+            int respuesta = JOptionPane.showConfirmDialog(this, 
+                    "¿Confirmar la devolución de este préstamo (ID: " + idPrestamo + ")?",
+                    "Confirmar Devolución", 
+                    JOptionPane.YES_NO_OPTION);
+            
+            if (respuesta == JOptionPane.YES_OPTION) {
+                try {
+                    // Llamar al DAO que maneja la transacción
+                    DAOPresYDev.RealizarDevolucion(idPrestamo);
+                    
+                    JOptionPane.showMessageDialog(this, "Devolución registrada con éxito.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+
+                    actualizarTablaLibrosPrestamos(); // El stock cambió
+                    actualizarTablaPrestamos();       // El estado cambió
+                    actualizarTablaLibros(); // Actualizar el panel de Libros también
+                    
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(this, "Error al registrar la devolución:\n" + ex.getMessage(), "Error de Devolución", JOptionPane.ERROR_MESSAGE);
+                    ex.printStackTrace();
+                }
+            }
+        }
+        else if(e.getSource() == jbLimpiarUsuariosPrestYDev) {
+            jtfBuscarUsuariosPrestYDev.setText("");
+            actualizarTablaUsuariosPrestamos();
+        }
+        else if(e.getSource() == jbLimpiarLibrosPrestYDev) {
+            jtfBuscarLibrosPrestYDev.setText("");
+            actualizarTablaLibrosPrestamos();
+        }
+        else if(e.getSource() == jbLimpiarPrestYDev) {
+            jtfBuscarPrestYDev.setText("");
+            actualizarTablaPrestamos();
         }
 		
 	}

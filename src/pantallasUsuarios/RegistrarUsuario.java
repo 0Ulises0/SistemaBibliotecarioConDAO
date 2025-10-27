@@ -34,20 +34,16 @@ public class RegistrarUsuario extends JFrame implements ActionListener {
 	private JPanel jpContenedor;
 	private JLabel jlRegistrarUsuario, jlNombre, jlApellido, jlGenero, jlTelefono, jlEmail, jlFechaNacimiento;
 	private JTextField jtfNombre, jtfApellido, jtfEmail, jtfTelefono;
+
 	
-	
-	// --- CAMBIO 1: Declaración de los nuevos componentes ---
-	// Ya no usamos JDateChooser ni JTextField para genero/fecha
-	
-	private JComboBox<String> jcbGenero; // Para el género
-	private JSpinner spinnerFechaNacimiento; // Para la fecha de nacimiento
+	private JComboBox<String> jcbGenero;
+	private JSpinner spinnerFechaNacimiento;
 	
 	private JButton jbRegistrarUsuario, jbCancelar;
 	
 	public RegistrarUsuario (String title) {
 		super(title);
 		setSize(800,600);
-		//setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		setLocationRelativeTo(null);
 		
 		contenedorPrincipal();
@@ -117,7 +113,7 @@ public class RegistrarUsuario extends JFrame implements ActionListener {
 		jtfTelefono = new JTextField(15);
 		jpContenedor.add(jtfTelefono, gbc);
 		
-		// --- CAMBIO 2: JComboBox para Género ---
+		//Genero:
 		gbc.gridx = 0;
 		gbc.gridy = 5;
 		jlGenero = new JLabel("Género:");
@@ -127,11 +123,9 @@ public class RegistrarUsuario extends JFrame implements ActionListener {
 		
 		String[] generos = {"Masculino", "Femenino"};
 		jcbGenero = new JComboBox<>(generos);
-		jcbGenero.setPreferredSize(new Dimension(170, 25)); // Tamaño similar al JTextField
+		jcbGenero.setPreferredSize(new Dimension(170, 25));
 		jpContenedor.add(jcbGenero, gbc);
 		
-		
-		// --- CAMBIO 3: JSpinner para Fecha de Nacimiento ---
 		gbc.gridx = 0;
 		gbc.gridy = 6;
 		jlFechaNacimiento = new JLabel("Fecha de Nacimiento:");
@@ -139,22 +133,14 @@ public class RegistrarUsuario extends JFrame implements ActionListener {
 		gbc.gridx = 1;
 		gbc.gridy = 6;
 		
-		// 1. Creamos un "modelo" de fecha para el Spinner
-		SpinnerDateModel dateModel = new SpinnerDateModel(
-			new Date(), // Valor inicial (hoy)
-			null,       // Sin fecha mínima
-			null,       // Sin fecha máxima
-			Calendar.DAY_OF_MONTH // Al pulsar flechas, cambia el día
-		);
-		
-		// 2. Creamos el JSpinner con ese modelo
+
+		SpinnerDateModel dateModel = new SpinnerDateModel(new Date(), null,null,Calendar.DAY_OF_MONTH);
+
 		spinnerFechaNacimiento = new JSpinner(dateModel);
-		
-		// 3. (Importante) Le decimos cómo queremos ver la fecha (dd/MM/yyyy)
+
 		JSpinner.DateEditor editor = new JSpinner.DateEditor(spinnerFechaNacimiento, "dd/MM/yyyy");
 		spinnerFechaNacimiento.setEditor(editor);
-		
-		// 4. Ajustamos el tamaño
+
 		spinnerFechaNacimiento.setPreferredSize(new Dimension(170, 25));
 		
 		jpContenedor.add(spinnerFechaNacimiento, gbc);
@@ -162,17 +148,16 @@ public class RegistrarUsuario extends JFrame implements ActionListener {
 		
 		gbc.gridwidth = 2;
 		gbc.anchor = GridBagConstraints.CENTER;
-		
-		//Registrar, Cancelar Usuario, boton
+
 		gbc.gridx = 0;
 		gbc.gridy = 7;
 		jbRegistrarUsuario = new JButton("Registrar");
-		jbRegistrarUsuario.addActionListener(this); // Añadir listener
+		jbRegistrarUsuario.addActionListener(this);
 		jpContenedor.add(jbRegistrarUsuario, gbc);
 		gbc.gridx = 0;
 		gbc.gridy = 8;
 		jbCancelar = new JButton("Cancelar");
-		jbCancelar.addActionListener(this); // Añadir listener
+		jbCancelar.addActionListener(this);
 		jpContenedor.add(jbCancelar, gbc);
 	}
 	
@@ -182,29 +167,16 @@ public class RegistrarUsuario extends JFrame implements ActionListener {
 		if (e.getSource() == jbRegistrarUsuario) {
 			
 			String generoSeleccionado = (String) jcbGenero.getSelectedItem();
-			
-			// --- INICIA EL CAMBIO ---
-			
-			// 1. Obtienes el objeto Date (como ya lo hacías)
+
 			Date fechaNacimiento = (Date) spinnerFechaNacimiento.getValue();
-			
-			// 2. Creas el formateador con el patrón que quieres
-			//    yyyy -> Año con 4 dígitos
-			//    MM   -> Mes con 2 dígitos (ej. 03 para Marzo)
-			//    dd   -> Día con 2 dígitos
+
 			SimpleDateFormat formateador = new SimpleDateFormat("yyyy-MM-dd");
-			
-			// 3. Usas el formateador para convertir el objeto Date a un String
+
 			String fechaFormateada = formateador.format(fechaNacimiento);
-			
-			// --- FIN DEL CAMBIO ---
-			
-			
-			// Imprimir en consola para probar
+
 			System.out.println("--- Nuevo Usuario ---");
 			System.out.println("Género: " + generoSeleccionado);
-			
-			// 4. Ahora imprimes el String formateado
+
 			System.out.println("Fecha Nac: " + fechaFormateada); 
 			
 			Usuario usuario = new Usuario(jtfNombre.getText(),jtfApellido.getText(),generoSeleccionado.charAt(0),jtfTelefono.getText(),jtfEmail.getText(),fechaFormateada);
@@ -223,7 +195,7 @@ public class RegistrarUsuario extends JFrame implements ActionListener {
 			
 		} else if (e.getSource() == jbCancelar) {
 			System.out.println("Registro cancelado.");
-			this.dispose(); // Cierra esta ventana
+			this.dispose();
 		}
 	}
 

@@ -27,7 +27,6 @@ private static final long serialVersionUID = 1L;
 	private JTextField jtfTitulo, jtfAutor, jtfCategoria, jtfEdicion, jtfStock;
 	private JButton jbModificarLibro, jbCancelar;
     
-    // --- AÑADIDO: Campo para guardar el ID ---
     private int idLibroModificar;
 	
 	public ModificarLibro(String title){
@@ -48,9 +47,6 @@ private static final long serialVersionUID = 1L;
 	public void InitComponents() {
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.insets = new Insets(5,5,5,5);
-		
-        // ... (Tu código de labels y textfields es correcto) ...
-        // ... (Titulo, Autor, Categoria, Edicion, Stock) ...
         gbc.gridwidth = 2;
 		gbc.anchor = GridBagConstraints.CENTER;
 		
@@ -121,30 +117,23 @@ private static final long serialVersionUID = 1L;
 		//BOTONES
 		gbc.gridx = 0;
 		gbc.gridy = 6;
-		jbModificarLibro = new JButton("Guardar Cambios"); // Texto cambiado
-        jbModificarLibro.addActionListener(this); // --- AÑADIDO ---
+		jbModificarLibro = new JButton("Guardar Cambios"); 
+        jbModificarLibro.addActionListener(this);
 		jpContenedor.add(jbModificarLibro, gbc);
 		gbc.gridx = 0;
 		gbc.gridy = 7;
 		jbCancelar = new JButton("Cancelar");
-        jbCancelar.addActionListener(this); // --- AÑADIDO ---
+        jbCancelar.addActionListener(this);
 		jpContenedor.add(jbCancelar, gbc);
 	}
-    
-    // --- MÉTODO NUEVO ---
-    /**
-     * Recibe los datos desde la pantalla Principal y los carga en los campos.
-     */
+
     public void cargarDatos(int id, String titulo, String autor, String categoria, int edicion, int stock) {
-        // 1. Guardar el ID para usarlo al momento de guardar
+
         this.idLibroModificar = id;
 
-        // 2. Llenar los campos de texto
         jtfTitulo.setText(titulo);
         jtfAutor.setText(autor);
         jtfCategoria.setText(categoria);
-        
-        // 3. Convertir los 'int' a 'String' para los JTextField
         jtfEdicion.setText(String.valueOf(edicion));
         jtfStock.setText(String.valueOf(stock));
     }
@@ -153,31 +142,23 @@ private static final long serialVersionUID = 1L;
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == jbModificarLibro) {
             try {
-                // 1. Obtener los datos de los campos
                 String titulo = jtfTitulo.getText();
                 String autor = jtfAutor.getText();
                 String categoria = jtfCategoria.getText();
-                
-                // 2. Validar (básico)
                 if (titulo.isEmpty() || autor.isEmpty() || categoria.isEmpty() || jtfEdicion.getText().isEmpty() || jtfStock.getText().isEmpty()) {
                     JOptionPane.showMessageDialog(this, "Todos los campos son obligatorios.", "Error de Validación", JOptionPane.WARNING_MESSAGE);
                     return;
                 }
 
-                // 3. Convertir los números
                 int edicion = Integer.parseInt(jtfEdicion.getText());
                 int stock = Integer.parseInt(jtfStock.getText());
 
-                // 4. Crear el objeto Libro
                 Libro libroModificado = new Libro(titulo, autor, categoria, edicion, stock);
 
-                // 5. Llamar al DAO para guardar (usando el ID guardado)
                 DAOLibros.ModificarLibro(libroModificado, this.idLibroModificar);
-                
-                // 6. Mostrar éxito y cerrar
-                JOptionPane.showMessageDialog(this, "Libro modificado correctamente.", "Modificación Exitosa", JOptionPane.INFORMATION_MESSAGE);
-                this.dispose(); // Cierra esta ventana
 
+                JOptionPane.showMessageDialog(this, "Libro modificado correctamente.", "Modificación Exitosa", JOptionPane.INFORMATION_MESSAGE);
+                this.dispose(); 
             } catch (NumberFormatException nfe) {
                 JOptionPane.showMessageDialog(this, "Error: 'Edición' y 'Stock' deben ser números válidos.", "Error de Formato", JOptionPane.ERROR_MESSAGE);
             } catch (SQLException sqle) {
@@ -186,7 +167,7 @@ private static final long serialVersionUID = 1L;
             }
 
         } else if (e.getSource() == jbCancelar) {
-            this.dispose(); // Cierra esta ventana
+            this.dispose();
         }
 	}
 }

@@ -13,21 +13,18 @@ import objetos.Libro;
 
 public class DAOLibros extends ConexionDB {
 	
-    /**
-     * Consulta libros, opcionalmente filtrando solo los que tienen stock.
-     * @param soloDisponibles Si es true, solo devuelve libros con Stock > 0.
-     */
+
 	public static Object [][] ConsultarTodo (boolean soloDisponibles) throws Exception{
 		 Connection conn = null;
 	     PreparedStatement ps = null;
 	     ResultSet rs = null;
 	     
-         // La consulta base
+
 	     String select = "SELECT IDLibro, Titulo, Autor, Categoria, Edicion, Stock FROM Libro";
          
-         // Si el checkbox está marcado, añadimos la condición WHERE
+         
          if (soloDisponibles) {
-             select += " WHERE Stock > 0";
+             select += " WHERE Stock > 0"; // Si el checkbox está marcado, añadimos la condición WHERE
          }
          
 	     ArrayList<Object[]> listado = new ArrayList<>();
@@ -62,11 +59,7 @@ public class DAOLibros extends ConexionDB {
 	        return listado.toArray(new Object[listado.size()][]);
 	}
     
-    /**
-     * Busca libros por título, opcionalmente filtrando solo los que tienen stock.
-     * @param titulo El texto para buscar con LIKE.
-     * @param soloDisponibles Si es true, solo devuelve libros con Stock > 0.
-     */
+
     public static Object[][] BuscarLibro(String titulo, boolean soloDisponibles) throws Exception {
         Connection conn = null;
         PreparedStatement ps = null;
@@ -75,9 +68,9 @@ public class DAOLibros extends ConexionDB {
         String select = "SELECT IDLibro, Titulo, Autor, Categoria, Edicion, Stock FROM Libro "
                       + "WHERE Titulo LIKE ?";
         
-        // Añade el filtro de stock si es necesario
+        
         if (soloDisponibles) {
-            select += " AND Stock > 0";
+            select += " AND Stock > 0"; // Añade el filtro de stock si es necesario
         }
         
         ArrayList<Object[]> listado = new ArrayList<>();
@@ -114,17 +107,13 @@ public class DAOLibros extends ConexionDB {
         return listado.toArray(new Object[listado.size()][]);
     }
     
-    /**
-     * Agrega un nuevo libro a la base de datos.
-     * Usa la clase objetos.Libro que proporcionaste.
-     */
+
     public static void AgregarLibro(Libro libro) throws SQLException {
         String sql = "INSERT INTO Libro (Titulo, Autor, Categoria, Edicion, Stock) VALUES (?,?,?,?,?)";
 
         try (Connection conn = GetConexion();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            // Usa los getters de tu clase Libro
             ps.setString(1, libro.getTitulo());
             ps.setString(2, libro.getAutor());
             ps.setString(3, libro.getCategoria());
@@ -135,10 +124,7 @@ public class DAOLibros extends ConexionDB {
         }
     }
     
-    /**
-     * Modifica un libro existente basado en su ID.
-     * Usa la clase objetos.Libro que proporcionaste.
-     */
+
     public static void ModificarLibro(Libro libro, int idLibro) throws SQLException {
         String sql = "UPDATE Libro SET Titulo = ?, Autor = ?, Categoria = ?, Edicion = ?, Stock = ? "
                    + "WHERE IDLibro = ?";
@@ -146,21 +132,18 @@ public class DAOLibros extends ConexionDB {
         try (Connection conn = GetConexion();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             
-            // Usa los getters de tu clase Libro
             ps.setString(1, libro.getTitulo());
             ps.setString(2, libro.getAutor());
             ps.setString(3, libro.getCategoria());
             ps.setInt(4, libro.getEdicion());
             ps.setInt(5, libro.getStock());
-            ps.setInt(6, idLibro); // El ID para el WHERE
+            ps.setInt(6, idLibro); 
             
             ps.executeUpdate();
         }
     }
     
-    /**
-     * Elimina un libro de la base de datos usando su ID.
-     */
+
     public static void EliminarLibroPorId(int idLibro) throws SQLException {
         String sql = "DELETE FROM Libro WHERE IDLibro = ?";
         

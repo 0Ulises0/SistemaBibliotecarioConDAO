@@ -7,13 +7,11 @@ public class Usuario {
 	private String Telefono;
 	private String Email;
 	private String FechaNacimiento;
-	
-	//Constructor vacio
+
 	public Usuario() {
 		this("","",'-',"","","");
 	}
 
-	//Constructor con parametros
 	public Usuario(String nombre, String apellido, char genero, String telefono, String email,
 			String fechaNacimiento) {
 		super();
