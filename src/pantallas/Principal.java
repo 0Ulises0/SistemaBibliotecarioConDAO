@@ -847,7 +847,7 @@ public class Principal extends JFrame implements ActionListener {
 			
 
 			if(filaSeleccionada == -1) {
-				JOptionPane.showMessageDialog(this, "Por favor, selecciona un usuario de la tabla para modificar.", "Ningún usuario seleccionado", JOptionPane.WARNING_MESSAGE);
+				JOptionPane.showMessageDialog(this, "Selecciona un usuario de la tabla para modificar.", "Ningun usuario seleccionado", JOptionPane.WARNING_MESSAGE);
                 return;
 			}
 			
@@ -878,7 +878,7 @@ public class Principal extends JFrame implements ActionListener {
 		else if(e.getSource() == jbEliminarUsuario) {
 			int filaSeleccionada = jtUsuarios.getSelectedRow();
 			if(filaSeleccionada == -1) {
-				JOptionPane.showMessageDialog(this, "No hay usuario seleccionado a eliminar.", "Ningún usuario seleccionado", JOptionPane.WARNING_MESSAGE);
+				JOptionPane.showMessageDialog(this, "No hay usuario seleccionado a eliminar.", "Ningun usuario seleccionado", JOptionPane.WARNING_MESSAGE);
                 return;
 			}
 			int idUsuario = (Integer) jtUsuarios.getValueAt(filaSeleccionada, 0);
@@ -923,7 +923,7 @@ public class Principal extends JFrame implements ActionListener {
 		else if(e.getSource() == jbModificarLibro) {
             int filaSeleccionada = jtLibros.getSelectedRow();
             if(filaSeleccionada == -1) {
-                JOptionPane.showMessageDialog(this, "Por favor, selecciona un libro para modificar.", "Ningún libro seleccionado", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Por favor, selecciona un libro para modificar.", "Ningun libro seleccionado", JOptionPane.WARNING_MESSAGE);
                 return;
             }
             
@@ -954,7 +954,7 @@ public class Principal extends JFrame implements ActionListener {
 
             int filaSeleccionada = jtLibros.getSelectedRow();
             if(filaSeleccionada == -1) {
-                JOptionPane.showMessageDialog(this, "No hay libro seleccionado a eliminar.", "Ningún libro seleccionado", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(this, "No hay libro seleccionado a eliminar.", "Ningun libro seleccionado", JOptionPane.WARNING_MESSAGE);
                 return;
             }
             
@@ -970,7 +970,7 @@ public class Principal extends JFrame implements ActionListener {
                     DAOLibros.EliminarLibroPorId(idLibro);
                     actualizarTablaLibros(); 
                     JOptionPane.showMessageDialog(this, 
-                            "Libro eliminado correctamente.", "Eliminación Exitosa", JOptionPane.INFORMATION_MESSAGE);
+                            "Libro eliminado correctamente.", "Eliminacion Exitosa", JOptionPane.INFORMATION_MESSAGE);
                 }
                 
             } catch (SQLException e1) {
@@ -1025,7 +1025,7 @@ public class Principal extends JFrame implements ActionListener {
                     // Llamar al DAO que maneja la transacción
                     DAOPresYDev.RealizarPrestamo(idUsuario, idLibro);
                     
-                    JOptionPane.showMessageDialog(this, "Préstamo realizado con éxito.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Prestamo realizado con exito.", "Prestamo Exitoso", JOptionPane.INFORMATION_MESSAGE);
                     
 
                     actualizarTablaLibrosPrestamos(); // El stock cambió
@@ -1033,7 +1033,7 @@ public class Principal extends JFrame implements ActionListener {
                     actualizarTablaLibros(); // Actualizar el panel de Libros también
                     
                 } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(this, "Error al realizar el préstamo:\n" + ex.getMessage(), "Error de Préstamo", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Error al realizar el prestamo:\n" + ex.getMessage(), "Error de Prestamo", JOptionPane.ERROR_MESSAGE);
                     ex.printStackTrace();
                 }
             }
@@ -1042,7 +1042,7 @@ public class Principal extends JFrame implements ActionListener {
 
             int filaPrestamo = jtPrestYDev.getSelectedRow();
             if (filaPrestamo == -1) {
-                JOptionPane.showMessageDialog(this, "Debe seleccionar un préstamo de la tabla inferior para devolver.", "Error", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Debe seleccionar un prestamo de la tabla inferior para devolver.", "Error", JOptionPane.WARNING_MESSAGE);
                 return;
             }
             
@@ -1060,14 +1060,14 @@ public class Principal extends JFrame implements ActionListener {
                     // Llamar al DAO que maneja la transacción
                     DAOPresYDev.RealizarDevolucion(idPrestamo);
                     
-                    JOptionPane.showMessageDialog(this, "Devolución registrada con éxito.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Devolución registrada con éxito.", "Devolucion Exitosa", JOptionPane.INFORMATION_MESSAGE);
 
-                    actualizarTablaLibrosPrestamos(); // El stock cambió
-                    actualizarTablaPrestamos();       // El estado cambió
-                    actualizarTablaLibros(); // Actualizar el panel de Libros también
+                    actualizarTablaLibrosPrestamos(); // El stock cambio
+                    actualizarTablaPrestamos();       // El estado cambio
+                    actualizarTablaLibros(); // Actualizar el panel de Libros tambien
                     
                 } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(this, "Error al registrar la devolución:\n" + ex.getMessage(), "Error de Devolución", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Error al registrar la devolucion:\n" + ex.getMessage(), "Error de Devolucion", JOptionPane.ERROR_MESSAGE);
                     ex.printStackTrace();
                 }
             }

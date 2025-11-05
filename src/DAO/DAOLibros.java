@@ -60,10 +60,7 @@ public class DAOLibros extends ConexionDB {
     }
 	
 	public static Object [][] ConsultarTodo (boolean soloDisponibles) throws Exception{
-		 Connection conn = null;
-	     PreparedStatement ps = null;
-	     ResultSet rs = null;
-
+		
 	     String select = "SELECT IDLibro, Titulo, Autor, Categoria, Edicion, Stock FROM Libro";
          
          if (soloDisponibles) {
@@ -71,10 +68,10 @@ public class DAOLibros extends ConexionDB {
          }
          
 	     ArrayList<Object[]> listado = new ArrayList<>();
-	     try {
-	            conn = GetConexion();
-	            ps = conn.prepareStatement(select);
-	            rs = ps.executeQuery();
+	     try (Connection conn = GetConexion();
+	    	  PreparedStatement ps = conn.prepareStatement(select);
+	    	  ResultSet rs = ps.executeQuery()) {
+	            
 	            ResultSetMetaData metaData = rs.getMetaData(); //obtiene los datos de la tabla
 	            int numeroColumnas = metaData.getColumnCount(); //obtiene el numero de columnas que tiene
 
@@ -93,10 +90,6 @@ public class DAOLibros extends ConexionDB {
 
 	        } catch (Exception e) {
 	            throw new Exception("E: " + e.getMessage());
-	        } finally {
-	            if (rs != null) rs.close();
-	            if (ps != null) ps.close();
-	            if (conn != null) conn.close();
 	        }
 	        
 	        return listado.toArray(new Object[listado.size()][]);
@@ -104,9 +97,6 @@ public class DAOLibros extends ConexionDB {
     
 
     public static Object[][] BuscarLibro(String titulo, boolean soloDisponibles) throws Exception {
-        Connection conn = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
 
         String select = "SELECT IDLibro, Titulo, Autor, Categoria, Edicion, Stock FROM Libro "
                       + "WHERE Titulo LIKE ?";
@@ -118,41 +108,34 @@ public class DAOLibros extends ConexionDB {
         
         ArrayList<Object[]> listado = new ArrayList<>();
 
-        try {
-            conn = GetConexion();
-            ps = conn.prepareStatement(select);
+        try (Connection conn = GetConexion();
+        	 PreparedStatement ps = conn.prepareStatement(select)) {
+            
             
             ps.setString(1, titulo + "%"); // para que java interprete el parametro de like se tiene que concatenar asi
             
-            rs = ps.executeQuery();
-            ResultSetMetaData metaData = rs.getMetaData();
-            int numeroColumnas = metaData.getColumnCount();
+            try(ResultSet rs = ps.executeQuery()){
+            	ResultSetMetaData metaData = rs.getMetaData();
+                int numeroColumnas = metaData.getColumnCount();
 
-            while (rs.next()) {
-                Object[] fila = new Object[numeroColumnas];
-                fila[0] = rs.getInt("IDLibro");
-                fila[1] = rs.getString("Titulo");
-                fila[2] = rs.getString("Autor");
-                fila[3] = rs.getString("Categoria");
-                fila[4] = rs.getInt("Edicion");
-                fila[5] = rs.getInt("Stock");
-                listado.add(fila);
+                while (rs.next()) {
+                    Object[] fila = new Object[numeroColumnas];
+                    fila[0] = rs.getInt("IDLibro");
+                    fila[1] = rs.getString("Titulo");
+                    fila[2] = rs.getString("Autor");
+                    fila[3] = rs.getString("Categoria");
+                    fila[4] = rs.getInt("Edicion");
+                    fila[5] = rs.getInt("Stock");
+                    listado.add(fila);
+                }
             }
+            
 
         } catch (Exception e) {
             throw new Exception("E: " + e.getMessage());
-        } finally {
-            if (rs != null) rs.close();
-            if (ps != null) ps.close();
-            if (conn != null) conn.close();
         }
         
         return listado.toArray(new Object[listado.size()][]);
     }
-    
-
-    
-    
-
     
 }

@@ -6,6 +6,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.awt.Dimension; // Para los tamaños
 
@@ -225,15 +226,25 @@ public class ModificarUsuario extends JFrame implements ActionListener {
                 this.dispose();
                 
             } 
-            catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, 
-                        "Error al modificar el usuario:\n" + ex.getMessage(), 
-                        "Error de Base de Datos", 
-                        JOptionPane.ERROR_MESSAGE);
-                ex.printStackTrace();
-            }
+            catch (SQLException e1) {
+				String error = e1.getMessage();
+				if (error.contains("chk_telefono")) {
+			        JOptionPane.showMessageDialog(this, 
+			                "El formato del teléfono no es válido.\n" +
+			                "La base de datos rechazó el valor.", 
+			                "Datos Inválidos", 
+			                JOptionPane.ERROR_MESSAGE);
+				}
+				else if(error.contains("chk_email")) {
+					JOptionPane.showMessageDialog(this, 
+			                "El formato del email no es válido.\n" +
+			                "La base de datos rechazó el valor.", 
+			                "Datos Inválidos", 
+			                JOptionPane.ERROR_MESSAGE);
+				}
+			}
 			
-			} 
+		} 
 		else if (e.getSource() == jbCancelar) {
 				System.out.println("Modificación cancelada.");
 				this.dispose(); 

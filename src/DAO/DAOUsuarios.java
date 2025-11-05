@@ -15,19 +15,14 @@ public class DAOUsuarios extends ConexionDB{
 
 	public static Object[][] ConsultarTodo() throws Exception {
 	        
-	        Connection conn = null;
-	        PreparedStatement ps = null;
-	        ResultSet rs = null;
-	        
 	        String select = "SELECT IDUsuario, Nombre, Apellido, Genero, Telefono, Email, FechaNacimiento FROM Usuario";
 	        
 	        ArrayList<Object[]> listado = new ArrayList<>();
 	
-	        try {
-	            conn = GetConexion();
-	            ps = conn.prepareStatement(select);
-	            rs = ps.executeQuery();
-	
+	        try (Connection conn = GetConexion();
+	        	PreparedStatement ps = conn.prepareStatement(select);
+	        	ResultSet rs = ps.executeQuery();) {
+	            
 	            ResultSetMetaData metaData = rs.getMetaData();
 	            int numeroColumnas = metaData.getColumnCount();
 	
@@ -46,12 +41,7 @@ public class DAOUsuarios extends ConexionDB{
 	
 	        } catch (Exception e) {
 	            throw new Exception("Error al consultar usuarios: " + e.getMessage());
-	        } finally {
-	            if (rs != null) rs.close();
-	            if (ps != null) ps.close();
-	            if (conn != null) conn.close();
-	        }
-	        
+	        } 
 	        return listado.toArray(new Object[listado.size()][]);
 	}
 	
@@ -110,10 +100,6 @@ public class DAOUsuarios extends ConexionDB{
 	}
 	
 	public static Object[][] BuscarUsuario(String nombre) throws Exception {
-	    
-	    Connection conn = null;
-	    PreparedStatement ps = null;
-	    ResultSet rs = null;
 
 	    String select = "SELECT IDUsuario, Nombre, Apellido, Genero, Telefono, Email, FechaNacimiento "
 	                  + "FROM Usuario "
@@ -121,35 +107,33 @@ public class DAOUsuarios extends ConexionDB{
 	    
 	    ArrayList<Object[]> listado = new ArrayList<>();
 
-	    try {
-	        conn = GetConexion();
-	        ps = conn.prepareStatement(select);
+	    try (Connection conn = GetConexion();
+	    	PreparedStatement ps = conn.prepareStatement(select);) {
 
 	        ps.setString(1, nombre + "%");
+	        
+	        try (ResultSet rs = ps.executeQuery()) {
+	        	
+	        	while (rs.next()) {
+		            Object[] fila = new Object[7];
+		            
+		            fila[0] = rs.getInt("IDUsuario");
+		            fila[1] = rs.getString("Nombre");
+		            fila[2] = rs.getString("Apellido");
+		            fila[3] = rs.getString("Genero");
+		            fila[4] = rs.getString("Telefono");
+		            fila[5] = rs.getString("Email");
+		            fila[6] = rs.getString("FechaNacimiento");
 
-	        rs = ps.executeQuery();
-
-	        while (rs.next()) {
-	            Object[] fila = new Object[7];
-	            
-	            fila[0] = rs.getInt("IDUsuario");
-	            fila[1] = rs.getString("Nombre");
-	            fila[2] = rs.getString("Apellido");
-	            fila[3] = rs.getString("Genero");
-	            fila[4] = rs.getString("Telefono");
-	            fila[5] = rs.getString("Email");
-	            fila[6] = rs.getString("FechaNacimiento");
-
-	            listado.add(fila);
+		            listado.add(fila);
+		        }
 	        }
 
+	        
+
 	    } catch (Exception e) {
-	        throw new Exception("Error al buscar usuarios: " + e.getMessage());
-	    } finally {
-	        if (rs != null) rs.close();
-	        if (ps != null) ps.close();
-	        if (conn != null) conn.close();
-	    }
+	        throw new Exception("E: " + e.getMessage());
+	    } 
 	  
 	    return listado.toArray(new Object[listado.size()][]);
 	}

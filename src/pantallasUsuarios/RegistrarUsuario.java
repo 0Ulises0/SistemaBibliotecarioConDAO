@@ -173,11 +173,6 @@ public class RegistrarUsuario extends JFrame implements ActionListener {
 			SimpleDateFormat formateador = new SimpleDateFormat("yyyy-MM-dd");
 
 			String fechaFormateada = formateador.format(fechaNacimiento);
-
-			System.out.println("--- Nuevo Usuario ---");
-			System.out.println("Género: " + generoSeleccionado);
-
-			System.out.println("Fecha Nac: " + fechaFormateada); 
 			
 			Usuario usuario = new Usuario(jtfNombre.getText(),jtfApellido.getText(),generoSeleccionado.charAt(0),jtfTelefono.getText(),jtfEmail.getText(),fechaFormateada);
 			
@@ -190,7 +185,21 @@ public class RegistrarUsuario extends JFrame implements ActionListener {
                 
                 this.dispose();
 			} catch (SQLException e1) {
-				e1.printStackTrace();
+				String error = e1.getMessage();
+				if (error.contains("chk_telefono")) {
+			        JOptionPane.showMessageDialog(this, 
+			                "El formato del teléfono no es válido.\n" +
+			                "La base de datos rechazó el valor.", 
+			                "Datos Inválidos", 
+			                JOptionPane.ERROR_MESSAGE);
+				}
+				else if(error.contains("chk_email")) {
+					JOptionPane.showMessageDialog(this, 
+			                "El formato del email no es válido.\n" +
+			                "La base de datos rechazó el valor.", 
+			                "Datos Inválidos", 
+			                JOptionPane.ERROR_MESSAGE);
+				}
 			}
 			
 		} else if (e.getSource() == jbCancelar) {

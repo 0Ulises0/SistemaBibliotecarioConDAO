@@ -149,10 +149,10 @@ public class RegistrarLibro extends JFrame implements ActionListener{
                 JOptionPane.showMessageDialog(this, "Libro registrado correctamente.", "Registro Exitoso", JOptionPane.INFORMATION_MESSAGE);
                 this.dispose();
             } catch (NumberFormatException nfe) {
-                JOptionPane.showMessageDialog(this, "Error: 'Edición' y 'Stock' deben ser números válidos.", "Error de Formato", JOptionPane.ERROR_MESSAGE);
-            } catch (SQLException sqle) {
-                JOptionPane.showMessageDialog(this, "Error al guardar en la base de datos: " + sqle.getMessage(), "Error de Base de Datos", JOptionPane.ERROR_MESSAGE);
-                sqle.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Edicion y Stock deben ser números válidos.", "Error de Formato", JOptionPane.ERROR_MESSAGE);
+            } catch (SQLException exx) {
+                JOptionPane.showMessageDialog(this, "Error al guardar en la base de datos: " + exx.getMessage(), "Error de Base de Datos", JOptionPane.ERROR_MESSAGE);
+                exx.printStackTrace();
             }
 
         } else if (e.getSource() == jbCancelar) {
